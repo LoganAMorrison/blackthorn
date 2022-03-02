@@ -1,0 +1,75 @@
+{
+    "outfile": "branching_ratios.hdf5",
+    "datasets": [
+        {
+            "name": "mev",
+            "datasets": [
+                {
+                    "name": "e",
+                    "min-mass": 1e-4,
+                    "max-mass": 0.5,
+                    "num-mass": 250,
+                    "gen": 1,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                },
+                {
+                    "name": "mu",
+                    "min-mass": 1e-4,
+                    "max-mass": 0.5,
+                    "num-mass": 250,
+                    "gen": 2,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                },
+                {
+                    "name": "tau",
+                    "min-mass": 1e-4,
+                    "max-mass": 0.5,
+                    "num-mass": 250,
+                    "gen": 3,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                }
+            ]
+        },
+        {
+            "name": "gev",
+            "datasets": [
+                {
+                    "name": "e",
+                    "min-mass": 5.0,
+                    "max-mass": 1e3,
+                    "num-mass": 250,
+                    "gen": 1,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                },
+                {
+                    "name": "mu",
+                    "min-mass": 5.0,
+                    "max-mass": 1e3,
+                    "num-mass": 250,
+                    "gen": 2,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                },
+                {
+                    "name": "tau",
+                    "min-mass": 5.0,
+                    "max-mass": 1e3,
+                    "num-mass": 250,
+                    "gen": 3,
+                    "theta": 1e-3,
+                    "catagorize": true,
+                    "progress": true
+                }
+            ]
+        }
+    ]
+}

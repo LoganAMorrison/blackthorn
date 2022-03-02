@@ -1,4 +1,0 @@
-Diagnostics:
-  ClangTidy:
-    Add: *
-    Remove: [fuchsia*, llvmlibc-callee*, cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers, -altera-struct-pack-align, -llvmlibc-restrict-system-libc-headers]

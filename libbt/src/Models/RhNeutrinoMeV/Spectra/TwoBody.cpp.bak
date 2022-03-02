@@ -1,0 +1,460 @@
+#include "blackthorn/Models/RhNeutrino.h"
+#include "blackthorn/Models/StandardModel.h"
+#include "blackthorn/Spectra.h"
+#include "blackthorn/Tools.h"
+
+namespace blackthorn {
+
+// ===========================================================================
+// ---- N -> l + M ----------------------------------------------------------
+// ===========================================================================
+
+template <class M, Gen L>
+static auto dndx_l_m_fsr(double x, double m) -> double {
+
+  constexpr double mm = field_attrs<M>::mass();
+  constexpr double ml = StandardModel::charged_lepton_mass<L>();
+
+  const double bm = mm / m;
+  const double bl = ml / m;
+  const double bm2 = tools::sqr(bm);
+  const double bl2 = tools::sqr(bl);
+  const double bm4 = tools::sqr(bm2);
+  const double bl4 = tools::sqr(bl2);
+
+  if (x >= 1 - tools::sqr(bm + bl) || x <= 0) {
+    return 0.0;
+  }
+
+  const double sqrtfac =
+      std::sqrt(std::pow(1 - x - bl2, 2) - 2 * (1 - x + bl2) * bm2 + bm4);
+
+  const double pre =
+      StandardModel::alpha_em /
+      (2.0 * M_PI * x *
+       std::sqrt(bl4 + std::pow(1 - bm2, 2) - 2 * bl2 * (1 + bm2)));
+
+  const double rat = -4 * sqrtfac;
+
+  const double mlog_pre = 2 * (1 - x - bl2 - bm2);
+  const double llog_pre =
+      2 * (1 - bl2 - bm2) +
+      x * (-2 + x * (1 + bl2) / (tools::sqr(1 - bl2) - bm2 * (1 + bl2)));
+
+  const double llog =
+      log((1 - x + bl2 - bm2 + sqrtfac) / (1 - x + bl2 - bm2 - sqrtfac));
+  const double mlog =
+      log((1 - x - bl2 + bm2 + sqrtfac) / (1 - x - bl2 + bm2 - sqrtfac));
+
+  return pre * (rat + llog_pre * llog + mlog_pre * mlog);
+}
+
+template <class M, Gen L> static auto dndx_l_m(double x, double m) -> double {
+  constexpr double mm = field_attrs<M>::mass();
+  constexpr double ml = StandardModel::charged_lepton_mass<L>();
+
+  if (m < mm + ml) {
+    return 0.0;
+  }
+
+  const double epi = tools::energy_one_cm(m, mm, ml);
+  const double el = tools::energy_one_cm(m, ml, mm);
+
+  const double eg = x * m / 2;
+  double dec = decay_spectrum<M>::dnde_photon(eg, epi);
+  const double fsr = dndx_l_m_fsr<M, L>(x, m);
+  if constexpr (L == Gen::Snd) {
+    dec += decay_spectrum<Muon>::dnde_photon(eg, el);
+  }
+  return fsr + m / 2 * dec; // NOLINT
+}
+
+template <class M, Gen L>
+static auto dndx_l_m(const py::array_t<double> &xs, double m)
+    -> py::array_t<double> {
+  py::buffer_info buf_xs = tools::get_buffer_and_check_dim(xs);
+
+  constexpr double mm = field_attrs<M>::mass();
+  constexpr double ml = StandardModel::charged_lepton_mass<L>();
+
+  if (m < mm + ml) {
+    return tools::zeros_like(xs);
+  }
+
+  const double epi = tools::energy_one_cm(m, mm, ml);
+  const double el = tools::energy_one_cm(m, ml, mm);
+
+  auto dndx = py::array_t<double>(buf_xs.size);
+  py::buffer_info buf_dndx = dndx.request();
+
+  auto *ptr_xs = static_cast<double *>(buf_xs.ptr);
+  auto *ptr_dndx = static_cast<double *>(buf_dndx.ptr);
+
+  double x = 0;
+  for (size_t i = 0; i < buf_xs.shape[0]; ++i) { // NOLINT
+    x = ptr_xs[i];                               // NOLINT
+    const double eg = x * m / 2;
+    double dec = decay_spectrum<M>::dnde_photon(eg, epi);
+    const double fsr = dndx_l_m_fsr<M, L>(x, m);
+    if constexpr (L == Gen::Snd) {
+      dec += decay_spectrum<Muon>::dnde_photon(eg, el);
+    }
+    ptr_dndx[i] = fsr + m / 2 * dec; // NOLINT
+  }
+
+  return dndx;
+}
+
+// ===========================================================================
+// ---- N -> l + pi ----------------------------------------------------------
+// ===========================================================================
+
+// auto RhNeutrinoMeV::dndx_l_pi(const py::array_t<double> &xs) const
+//     -> py::array_t<double> {
+//   if (p_gen == Gen::Fst) {
+//     return dndx_l_m<ChargedPion, Gen::Fst>(xs, p_mass);
+//   }
+//   if (p_gen == Gen::Snd) {
+//     return dndx_l_m<ChargedPion, Gen::Snd>(xs, p_mass);
+//   }
+//   return dndx_l_m<ChargedPion, Gen::Trd>(xs, p_mass);
+// }
+
+// auto RhNeutrinoMeV::dndx_l_pi(double x, double beta) const -> double {
+//   const double m = p_mass;
+//   std::function<double(double)> f;
+//   switch (p_gen) {
+//   case Gen::Fst:
+//     f = [m](double xx) { return dndx_l_m<ChargedPion, Gen::Snd>(xx, m); };
+//     break;
+//   case Gen::Snd:
+//     f = [m](double xx) { return dndx_l_m<ChargedPion, Gen::Snd>(xx, m); };
+//     break;
+//   default:
+//     return 0.0;
+//   }
+
+//   return dndx_boost(f, x, beta);
+// }
+
+// auto RhNeutrinoMeV::dndx_l_pi(const py::array_t<double> &xs, double e) const
+//     -> py::array_t<double> {
+
+//   py::buffer_info buf_xs = tools::get_buffer_and_check_dim(xs);
+
+//   std::function<double(double)> dndx_rf;
+//   if (p_gen == Gen::Fst) {
+//     dndx_rf = [&](double x) {
+//       return dndx_l_m<ChargedPion, Gen::Fst>(x, p_mass);
+//     };
+//   }
+//   if (p_gen == Gen::Snd) {
+//     dndx_rf = [&](double x) {
+//       return dndx_l_m<ChargedPion, Gen::Snd>(x, p_mass);
+//     };
+//   }
+//   dndx_rf = [&](double x) {
+//     return dndx_l_m<ChargedPion, Gen::Trd>(x, p_mass);
+//   };
+
+//   const double beta = sqrt(1 - tools::sqr(p_mass / e));
+
+//   auto dndx = py::array_t<double>(buf_xs.size);
+//   py::buffer_info buf_dndx = dndx.request();
+
+//   auto *ptr_xs = static_cast<double *>(buf_xs.ptr);
+//   auto *ptr_dndx = static_cast<double *>(buf_dndx.ptr);
+
+//   double x = 0;
+//   for (size_t i = 0; i < buf_xs.shape[0]; ++i) { // NOLINT
+//     x = ptr_xs[i];                               // NOLINT
+//     ptr_dndx[i] = dndx_boost(dndx_rf, x, beta);  // NOLINT
+//   }
+
+//   return dndx;
+// }
+
+auto RhNeutrinoMeV::dndx_l_pi(const py::array_t<double> &xs) const
+    -> py::array_t<double> {
+  if (p_gen == Gen::Fst) {
+    DecaySpectrum<Electron, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(xs, 0.0);
+  }
+  if (p_gen == Gen::Snd) {
+    DecaySpectrum<Muon, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(xs, 0.0);
+  }
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_l_pi(double x, double beta) const -> double {
+  if (p_gen == Gen::Fst) {
+    DecaySpectrum<Electron, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(x, beta);
+  }
+  if (p_gen == Gen::Snd) {
+    DecaySpectrum<Muon, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(x, beta);
+  }
+  return 0.0;
+}
+
+auto RhNeutrinoMeV::dndx_l_pi(const py::array_t<double> &xs, double e) const
+    -> py::array_t<double> {
+  const double beta = tools::beta(e, p_mass);
+  if (p_gen == Gen::Fst) {
+    DecaySpectrum<Electron, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(xs, beta);
+  }
+  if (p_gen == Gen::Snd) {
+    DecaySpectrum<Muon, ChargedPion> dspec(p_mass);
+    return dspec.dndx_photon(xs, beta);
+  }
+  return tools::zeros_like(xs);
+}
+
+// ===========================================================================
+// ---- N -> l + K -----------------------------------------------------------
+// ===========================================================================
+
+// auto DecaySpectrumPhotonLK::dnde_rest_frame(double e) -> double {
+//   const double m = parent_mass();
+//   switch (p_gen) {
+//   case Gen::Fst:
+//     return dndx_l_m<ChargedKaon, Gen::Fst>(e, m);
+//   case Gen::Snd:
+//     return dndx_l_m<ChargedKaon, Gen::Snd>(e, m);
+//   default:
+//     return 0.0;
+//   }
+// }
+
+// auto RhNeutrinoMeV::dndx_l_k(const py::array_t<double> &xs) const
+//     -> py::array_t<double> {
+//   if (p_gen == Gen::Fst) {
+//     return dndx_l_m<ChargedKaon, Gen::Fst>(xs, p_mass);
+//   }
+//   if (p_gen == Gen::Snd) {
+//     return dndx_l_m<ChargedKaon, Gen::Snd>(xs, p_mass);
+//   }
+//   return dndx_l_m<ChargedKaon, Gen::Trd>(xs, p_mass);
+// }
+
+// auto RhNeutrinoMeV::dndx_l_k(const py::array_t<double> &xs, double e) const
+//     -> py::array_t<double> {
+
+//   py::buffer_info buf_xs = tools::get_buffer_and_check_dim(xs);
+
+//   std::function<double(double)> dndx_rf;
+//   if (p_gen == Gen::Fst) {
+//     dndx_rf = [&](double x) {
+//       return dndx_l_m<ChargedKaon, Gen::Fst>(x, p_mass);
+//     };
+//   }
+//   if (p_gen == Gen::Snd) {
+//     dndx_rf = [&](double x) {
+//       return dndx_l_m<ChargedKaon, Gen::Snd>(x, p_mass);
+//     };
+//   }
+//   dndx_rf = [&](double x) {
+//     return dndx_l_m<ChargedKaon, Gen::Trd>(x, p_mass);
+//   };
+
+//   const double beta = sqrt(1 - tools::sqr(p_mass / e));
+
+//   auto dndx = py::array_t<double>(buf_xs.size);
+//   py::buffer_info buf_dndx = dndx.request();
+
+//   auto *ptr_xs = static_cast<double *>(buf_xs.ptr);
+//   auto *ptr_dndx = static_cast<double *>(buf_dndx.ptr);
+
+//   double x = 0;
+//   for (size_t i = 0; i < buf_xs.shape[0]; ++i) { // NOLINT
+//     x = ptr_xs[i];                               // NOLINT
+//     ptr_dndx[i] = dndx_boost(dndx_rf, x, beta);  // NOLINT
+//   }
+
+//   return dndx;
+// }
+
+auto RhNeutrinoMeV::dndx_l_k(const py::array_t<double> &xs) const
+    -> py::array_t<double> {
+  if (p_gen == Gen::Fst) {
+    DecaySpectrum<Electron, ChargedKaon> dspec(p_mass);
+    return dspec.dndx_photon(xs, 0.0);
+  }
+  if (p_gen == Gen::Snd) {
+    DecaySpectrum<Muon, ChargedKaon> dspec(p_mass);
+    return dspec.dndx_photon(xs, 0.0);
+  }
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_l_k(const py::array_t<double> &xs, double e) const
+    -> py::array_t<double> {
+  const double beta = tools::beta(e, p_mass);
+  if (p_gen == Gen::Fst) {
+    DecaySpectrum<Electron, ChargedKaon> dspec(p_mass);
+    return dspec.dndx_photon(xs, beta);
+  }
+  if (p_gen == Gen::Snd) {
+    DecaySpectrum<Muon, ChargedKaon> dspec(p_mass);
+    return dspec.dndx_photon(xs, beta);
+  }
+  return tools::zeros_like(xs);
+}
+
+// ===========================================================================
+// ---- N -> v + pi0 ---------------------------------------------------------
+// ===========================================================================
+
+auto RhNeutrinoMeV::dndx_v_pi0(double x, double beta) const -> double {
+  const double m = p_mass;
+  if (m < NeutralPion::mass) {
+    return 0.0;
+  }
+  const double epi = tools::energy_one_cm(m, NeutralPion::mass, 0);
+  auto f = [epi, m](double xx) {
+    return decay_spectrum<NeutralPion>::dndx_photon(xx, epi, m);
+  };
+  return dndx_boost(f, x, beta);
+}
+
+auto RhNeutrinoMeV::dndx_v_pi0(const py::array_t<double> &xs) const
+    -> py::array_t<double> {
+
+  if (p_mass < NeutralPion::mass) {
+    return tools::zeros_like(xs);
+  }
+  const double epi = tools::energy_one_cm(p_mass, NeutralPion::mass, 0);
+  return decay_spectrum<NeutralPion>::dndx_photon(xs, epi, p_mass);
+}
+
+auto RhNeutrinoMeV::dndx_v_pi0(const std::vector<double> &xs) const
+    -> std::vector<double> {
+
+  if (p_mass < NeutralPion::mass) {
+    return std::vector<double>(xs.size(), 0.0);
+  }
+  const double epi = tools::energy_one_cm(p_mass, NeutralPion::mass, 0.0);
+  return decay_spectrum<NeutralPion>::dndx_photon(xs, epi, p_mass);
+}
+
+auto RhNeutrinoMeV::dndx_v_pi0(const py::array_t<double> &xs, double e) const
+    -> py::array_t<double> {
+  if (p_mass < NeutralPion::mass) {
+    return tools::zeros_like(xs);
+  }
+
+  py::buffer_info buf_xs = tools::get_buffer_and_check_dim(xs);
+
+  auto dndx_rf = [&](double x) {
+    const double epi = tools::energy_one_cm(p_mass, NeutralPion::mass, 0);
+    return decay_spectrum<NeutralPion>::dndx_photon(x, epi, p_mass);
+  };
+  const double beta = sqrt(1 - tools::sqr(p_mass / e));
+
+  auto dndx = py::array_t<double>(buf_xs.size);
+  py::buffer_info buf_dndx = dndx.request();
+
+  auto *ptr_xs = static_cast<double *>(buf_xs.ptr);
+  auto *ptr_dndx = static_cast<double *>(buf_dndx.ptr);
+
+  double x = 0;
+  for (size_t i = 0; i < buf_xs.shape[0]; ++i) { // NOLINT
+    x = ptr_xs[i];                               // NOLINT
+    ptr_dndx[i] = dndx_boost(dndx_rf, x, beta);  // NOLINT
+  }
+
+  return dndx;
+}
+
+// =========================================================================
+// ---- Neutrino Spectra Functions -----------------------------------------
+// =========================================================================
+
+auto RhNeutrinoMeV::dndx_neutrino_l_pi(const pyarray &xs) const -> pyarray {
+  using tools::energy_one_cm;
+  using tools::sqr;
+
+  static constexpr double mpi = ChargedPion::mass;
+  static constexpr double mmu = Muon::mass;
+
+  const double m = p_mass;
+  const double epi_rf = energy_one_cm(m, mpi, mmu);
+
+  // Pion contribution
+  const auto dndx_pion_e = [m, epi_rf](double x) {
+    const double e = m * x / 2.0;
+    return decay_spectrum<ChargedPion>::dnde_neutrino(e, epi_rf).electron;
+  };
+  const auto dndx_pion_m = [m, epi_rf](double x) {
+    const double e = m * x / 2.0;
+    return decay_spectrum<ChargedPion>::dnde_neutrino(e, epi_rf).muon;
+  };
+
+  std::function<double(double)> dndx_l_e;
+  std::function<double(double)> dndx_l_m;
+
+  if (p_gen == Gen::Snd) {
+    const double emu_rf = energy_one_cm(m, mmu, mpi);
+
+    dndx_l_e = [m, emu_rf](double x) {
+      const double e = m * x / 2.0;
+      return decay_spectrum<Muon>::dnde_neutrino(e, emu_rf).electron;
+    };
+    dndx_l_m = [m, emu_rf](double x) {
+      const double e = m * x / 2.0;
+      return decay_spectrum<Muon>::dnde_neutrino(e, emu_rf).muon;
+    };
+  } else {
+    dndx_l_e = [](double /*x*/) { return 0.0; };
+    dndx_l_m = [](double /*x*/) { return 0.0; };
+  }
+
+  const auto dndx_e = [dndx_pion_e = std::move(dndx_pion_e),
+                       dndx_l_e = std::move(dndx_l_e)](double x) {
+    return dndx_pion_e(x) + dndx_l_e(x);
+  };
+
+  const auto dndx_m = [dndx_pion_m = std::move(dndx_pion_m),
+                       dndx_l_m = std::move(dndx_l_m)](double x) {
+    return dndx_pion_m(x) + dndx_l_m(x);
+  };
+
+  // Apply dndx's over xs
+}
+
+auto RhNeutrinoMeV::dndx_neutrino_l_k(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_neutrino_v_pi0(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_neutrino_v_eta(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+// =========================================================================
+// ---- Positron Spectra Functions -----------------------------------------
+// =========================================================================
+
+auto RhNeutrinoMeV::dndx_positron_l_pi(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_positron_l_k(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_positron_v_pi0(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+auto RhNeutrinoMeV::dndx_positron_v_eta(const pyarray &xs) const -> pyarray {
+  return tools::zeros_like(xs);
+}
+
+} // namespace blackthorn

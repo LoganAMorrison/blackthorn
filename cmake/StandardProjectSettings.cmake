@@ -1,3 +1,5 @@
+include(CheckCXXCompilerFlag)
+
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(
@@ -36,4 +38,14 @@ else()
     STATUS
       "No colored compiler diagnostic set for '${CMAKE_CXX_COMPILER_ID}' compiler."
   )
+endif()
+
+option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
+
+CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+
+if(COMPILER_SUPPORTS_MARCH_NATIVE)
+  if(OPTIMIZE_FOR_NATIVE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+  endif()
 endif()
