@@ -5,48 +5,6 @@
 
 namespace blackthorn {
 
-// /**
-//  * Helper struct to compute pi -> l + nu + a or k -> l + nu + a
-//  */
-// template <class L> static auto dnde_x_to_lva(double egam) -> double {
-//   static constexpr double ml = L::mass;
-//   static constexpr double mp = ChargedPion::mass;
-//   static constexpr double fp = ChargedPion::decay_const;
-//   static constexpr double ff_vec = ChargedPion::ff_vec;
-//   static constexpr double ff_axi = ChargedPion::ff_axi;
-//   static constexpr double ff_vec_slope = ChargedPion::ff_vec_slope;
-//   static constexpr double eps = 1.0;
-
-//   const double x = 2.0 * egam / mp;
-//   const double r = tools::sqr(ml / mp);
-
-//   if (x < 0.0 || 1.0 - r < x) {
-//     return 0.0;
-//   }
-//   const double vp = ff_vec * (1.0 - ff_vec_slope * (1.0 - x));
-//   const double xp = 1.0 - x;
-//   const double x2 = tools::sqr(x);
-
-//   const double t2 = r + x - 1.0;
-//   const double t3 = -2.0 * x;
-//   const double t4 = x - 2.0;
-
-//   return (StandardModel::alpha_em *
-//           (t2 * (24.0 * tools::sqr(fp) * r * xp *
-//                      (-4.0 * r * xp + tools::sqr(t4)) +
-//                  pow(mp, 2) * t2 * (2 + r + t3) *
-//                      (tools::sqr(ff_axi) + tools::sqr(vp)) * pow(x, 4) +
-//                  12.0 * eps * fp * mp * r * xp * M_SQRT2 * x2 *
-//                      (ff_axi * (1.0 + r + t3) + vp * x)) +
-//            12.0 * fp * r * tools::sqr(xp) *
-//                (fp * (-4.0 + 4.0 * tools::sqr(r) - 4.0 * r * x - 2.0 * t4 *
-//                x) +
-//                 eps * mp * M_SQRT2 * x2 * (-vp * x + ff_axi * (x - 2.0 * r)))
-//                 *
-//                log(r / xp))) /
-//          (24. * tools::sqr(fp * (1.0 - r) * xp) * mp * M_PI * r * x);
-// }
-
 auto decay_spectrum<ChargedPion>::dnde_photon(const double egam,
                                               const double epi) -> double {
   using Self = ChargedPion;
@@ -94,26 +52,29 @@ auto decay_spectrum<ChargedPion>::dnde_neutrino(const double enu,
     return {0.0, 0.0, 0.0};
   }
   const auto dnde_e_rf = [](double eg) -> double {
-    return decay_spectrum<Muon>::dnde_neutrino(eg, eng_mu_pi_rf).electron;
+    return decay_spectrum<Muon>::dnde_neutrino(eg, eng_mu_pi_rf, Gen::Fst);
   };
   const auto dnde_m_rf = [](double eg) -> double {
-    return decay_spectrum<Muon>::dnde_neutrino(eg, eng_mu_pi_rf).muon;
+    return decay_spectrum<Muon>::dnde_neutrino(eg, eng_mu_pi_rf, Gen::Snd);
   };
 
-  // Neutrino energies form: π -> ℓ + νℓ
-  const double e0_e = (sqr(mpi) - sqr(me)) / (2.0 * mpi);
-  const double e0_m = (sqr(mpi) - sqr(mmu)) / (2.0 * mpi);
+  // Maximum photon energy from muon decay in pion rest frame
+  const double emax = (1.0 - sqr(me / mmu)) * (1.0 + beta);
 
   // contributions from muon decay: π -> [μ -> e + νe + νμ + γ] + νμ
-  const double dnde_e = br_m * boost_spectrum(dnde_e_rf, epi, mpi, enu, 0.0);
-  const double dnde_m = br_m * boost_spectrum(dnde_m_rf, epi, mpi, enu, 0.0);
+  const double decay_e =
+      br_m * boost_spectrum(dnde_e_rf, epi, mpi, enu, 0.0, 0.0, emax);
+  const double decay_m =
+      br_m * boost_spectrum(dnde_m_rf, epi, mpi, enu, 0.0, 0.0, emax);
 
   // δ-function contribution from: π -> e + νe
-  const double dnde_e_d = br_e * boost_delta_function(e0_e, enu, 0.0, beta);
+  const double e0_e = tools::energy_one_cm(mpi, 0.0, me);
+  const double delta_e = br_e * boost_delta_function(e0_e, enu, 0.0, beta);
   // δ-function contribution from: π -> μ + νμ
-  const double dnde_m_d = br_m * boost_delta_function(e0_m, enu, 0.0, beta);
+  const double e0_m = tools::energy_one_cm(mpi, 0.0, mmu);
+  const double delta_m = br_m * boost_delta_function(e0_m, enu, 0.0, beta);
 
-  return {dnde_e + dnde_e_d, dnde_m + dnde_m_d, 0.0};
+  return {decay_e + delta_e, decay_m + delta_m, 0.0};
 }
 
 auto decay_spectrum<ChargedPion>::dnde_positron(const double ep,
@@ -162,6 +123,15 @@ auto decay_spectrum<ChargedPion>::dnde_photon(const py::array_t<double> &egams,
     -> py::array_t<double> {
   const auto f = [=](double x) { return dnde_photon(x, epi); };
   return tools::vectorized(f, egams);
+}
+
+auto decay_spectrum<ChargedPion>::dnde_positron(
+    const std::vector<double> &positron_energies, const double pion_energy)
+    -> std::vector<double> {
+  const auto f = [pion_energy](double x) {
+    return dnde_positron(x, pion_energy);
+  };
+  return tools::vectorized_par(f, positron_energies);
 }
 
 auto decay_spectrum<ChargedPion>::dnde_neutrino(const std::vector<double> &enus,

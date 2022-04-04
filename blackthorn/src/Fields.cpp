@@ -2,9 +2,12 @@
 #include <fmt/format.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <tuple>
 
 namespace bt = blackthorn;
 namespace py = pybind11;
+
+template <typename T> using Tuple = std::tuple<T, T, T>;
 
 class Electron {
 private:
@@ -20,6 +23,7 @@ public:
 class Muon {
 private:
   using F = bt::Muon;
+  using dnde = blackthorn::decay_spectrum<F>;
 
 public:
   static constexpr double mass = F::mass;
@@ -27,12 +31,32 @@ public:
   static constexpr bt::Gen gen = F::gen;
   static constexpr double width = F::width;
 
-  static auto dnde_photon(double e, double emu) -> double {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, emu);
+  static auto dnde_photon(double photon_energy, double muon_energy) -> double {
+    return dnde::dnde_photon(photon_energy, muon_energy);
   }
-  static auto dnde_photon(const std::vector<double> &e, double emu)
-      -> std::vector<double> {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, emu);
+  static auto dnde_photon(const std::vector<double> &photon_energy,
+                          double muon_energy) -> std::vector<double> {
+    return dnde::dnde_photon(photon_energy, muon_energy);
+  }
+
+  static auto dnde_positron(double positron_energy, double muon_energy)
+      -> double {
+    return dnde::dnde_positron(positron_energy, muon_energy);
+  }
+  static auto dnde_positron(const std::vector<double> &positron_energy,
+                            double muon_energy) -> std::vector<double> {
+    return dnde::dnde_positron(positron_energy, muon_energy);
+  }
+
+  static auto dnde_neutrino(double neutrino_energy, double muon_energy)
+      -> std::tuple<double, double, double> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, muon_energy);
+    return {result.electron, result.muon, result.tau};
+  }
+  static auto dnde_neutrino(const std::vector<double> &neutrino_energy,
+                            double muon_energy) -> Tuple<std::vector<double>> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, muon_energy);
+    return {result.electron, result.muon, result.tau};
   }
 };
 
@@ -200,64 +224,107 @@ public:
 class NeutralPion {
 private:
   using F = bt::NeutralPion;
+  using dnde = blackthorn::decay_spectrum<F>;
 
 public:
   static constexpr double mass = F::mass;
   static constexpr int pdg = F::pdg;
 
   static auto dnde_photon(double e, double epi) -> double {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, epi);
+    return dnde::dnde_photon(e, epi);
   }
   static auto dnde_photon(const std::vector<double> &e, double epi)
       -> std::vector<double> {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, epi);
+    return dnde::dnde_photon(e, epi);
   }
 };
 
 class ChargedPion {
 private:
   using F = bt::ChargedPion;
+  using dnde = blackthorn::decay_spectrum<F>;
 
 public:
   static constexpr double mass = F::mass;
   static constexpr int pdg = F::pdg;
 
-  static auto dnde_photon(double e, double epi) -> double {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, epi);
+  static auto dnde_photon(double photon_energy, double pion_energy) -> double {
+    return dnde::dnde_photon(photon_energy, pion_energy);
   }
-  static auto dnde_photon(const std::vector<double> &e, double epi)
-      -> std::vector<double> {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, epi);
+  static auto dnde_photon(const std::vector<double> &photon_energy,
+                          double pion_energy) -> std::vector<double> {
+    return dnde::dnde_photon(photon_energy, pion_energy);
+  }
+
+  static auto dnde_positron(double positron_energy, double pion_energy)
+      -> double {
+    return dnde::dnde_positron(positron_energy, pion_energy);
+  }
+  static auto dnde_positron(const std::vector<double> &positron_energy,
+                            double pion_energy) -> std::vector<double> {
+    return dnde::dnde_positron(positron_energy, pion_energy);
+  }
+
+  static auto dnde_neutrino(double neutrino_energy, double pion_energy)
+      -> std::tuple<double, double, double> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, pion_energy);
+    return {result.electron, result.muon, result.tau};
+  }
+  static auto dnde_neutrino(const std::vector<double> &neutrino_energy,
+                            double pion_energy) -> Tuple<std::vector<double>> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, pion_energy);
+    return {result.electron, result.muon, result.tau};
   }
 };
 
 class ChargedKaon {
 private:
   using F = bt::ChargedKaon;
+  using dnde = blackthorn::decay_spectrum<F>;
 
 public:
   static constexpr double mass = F::mass;
   static constexpr int pdg = F::pdg;
 
-  static auto dnde_photon(double e, double ek) -> double {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, ek);
+  static auto dnde_photon(double photon_energy, double kaon_energy) -> double {
+    return dnde::dnde_photon(photon_energy, kaon_energy);
   }
-  static auto dnde_photon(const std::vector<double> &e, double ek)
-      -> std::vector<double> {
-    return blackthorn::decay_spectrum<F>::dnde_photon(e, ek);
+  static auto dnde_photon(const std::vector<double> &photon_energy,
+                          double kaon_energy) -> std::vector<double> {
+    return dnde::dnde_photon(photon_energy, kaon_energy);
+  }
+
+  static auto dnde_positron(double positron_energy, double kaon_energy)
+      -> double {
+    return dnde::dnde_positron(positron_energy, kaon_energy);
+  }
+  static auto dnde_positron(const std::vector<double> &positron_energy,
+                            double kaon_energy) -> std::vector<double> {
+    return dnde::dnde_positron(positron_energy, kaon_energy);
+  }
+
+  static auto dnde_neutrino(double neutrino_energy, double pion_energy)
+      -> std::tuple<double, double, double> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, pion_energy);
+    return {result.electron, result.muon, result.tau};
+  }
+  static auto dnde_neutrino(const std::vector<double> &neutrino_energy,
+                            double pion_energy) -> Tuple<std::vector<double>> {
+    auto result = dnde::dnde_neutrino(neutrino_energy, pion_energy);
+    return {result.electron, result.muon, result.tau};
   }
 };
 
 template <class Field>
 static auto define_dnde_photon(py::class_<Field> *f) -> void {
-  static std::string doc_single = R"Doc(
+  static std::string doc = R"Doc(
 Compute the photon decay spectrum.
 
 Parameters
 ----------
-egam: float
+photon_energy: float
   Energy of the photon.
-eng: float
+parent_energy: float
   Energy of the decaying particle.
 
 Returns
@@ -266,47 +333,121 @@ dnde: float
   Value of the photon spectrum dN/dE.
 )Doc";
 
-  static std::string doc_vec = R"Doc(
-Compute the photon decay spectrum.
+  f->def_static(
+      "dnde_photon",
+      [](double photon_energy, double parent_energy) {
+        return Field::dnde_photon(photon_energy, parent_energy);
+      },
+      doc.c_str(), py::arg("photon_energy"), py::arg("parent_energy"));
+  f->def_static(
+      "dnde_photon",
+      [](const py::array_t<double> &photon_energy, double parent_energy) {
+        auto e = photon_energy.unchecked<1>();
+        auto result = py::array_t<double>(photon_energy.request());
+        auto r = result.mutable_unchecked<1>();
+        for (size_t i = 0; i < e.shape(0); ++i) { // NOLINT
+          r(i) = Field::dnde_photon(e(i), parent_energy);
+        }
+        return result;
+      },
+      doc.c_str(), py::arg("photon_energy"), py::arg("parent_energy"));
+}
+
+template <class Field>
+static auto define_dnde_positron(py::class_<Field> *f) -> void {
+  static std::string doc = R"Doc(
+Compute the positron decay spectrum.
 
 Parameters
 ----------
-egams: array-like
-  Array of photon energies.
-eng: float
+positron_energy: float
+  Energy of the positron.
+parent_energy: float
   Energy of the decaying particle.
 
 Returns
 -------
-dnde: array-like
-  Photon spectrum dN/dE evaluated at the input energies.
+dnde: float
+  Value of the positron spectrum dN/dE.
 )Doc";
 
   f->def_static(
-      "dnde_photon",
-      [](double e, double emu) { return Field::dnde_photon(e, emu); },
-      doc_single.c_str(), py::arg("egam"), py::arg("eng"));
-  f->def_static(
-      "dnde_photon",
-      [](const std::vector<double> &e, double emu) {
-        return Field::dnde_photon(e, emu);
+      "dnde_positron",
+      [](double positron_energy, double parent_energy) {
+        return Field::dnde_positron(positron_energy, parent_energy);
       },
-      doc_vec.c_str(), py::arg("egams"), py::arg("eng"));
+      doc.c_str(), py::arg("positron_energy"), py::arg("parent_energy"));
+  f->def_static(
+      "dnde_positron",
+      [](const py::array_t<double> &positron_energy, double parent_energy) {
+        auto e = positron_energy.unchecked<1>();
+        auto result = py::array_t<double>(positron_energy.request());
+        auto r = result.mutable_unchecked<1>();
+        for (size_t i = 0; i < e.shape(0); ++i) { // NOLINT
+          r(i) = Field::dnde_positron(e(i), parent_energy);
+        }
+        return result;
+      },
+      doc.c_str(), py::arg("positron_energy"), py::arg("parent_energy"));
+}
+
+template <class Field>
+static auto define_dnde_neutrino(py::class_<Field> *f) -> void {
+  static std::string doc = R"Doc(
+Compute the neutrino decay spectrum.
+
+Parameters
+----------
+neutrino_energy: float
+  Energy of the positron.
+parent_energy: float
+  Energy of the decaying particle.
+
+Returns
+-------
+dnde: float
+  Value of the positron spectrum dN/dE.
+)Doc";
+
+  f->def_static(
+      "dnde_neutrino",
+      [](double neutrino_energy, double parent_energy) {
+        return Field::dnde_neutrino(neutrino_energy, parent_energy);
+      },
+      doc.c_str(), py::arg("neutrino_energy"), py::arg("parent_energy"));
+  f->def_static(
+      "dnde_neutrino",
+      [](const py::array_t<double> &neutrino_energy, double parent_energy) {
+        auto e = neutrino_energy.unchecked<1>();
+        py::array_t<double, py::array::c_style> result(
+            {static_cast<decltype(e.shape(0))>(3), e.shape(0)});
+        auto r = result.mutable_unchecked<2>();
+        for (size_t i = 0; i < e.shape(0); ++i) { // NOLINT
+          auto dnde = Field::dnde_neutrino(e(i), parent_energy);
+          r(0, i) = std::get<0>(dnde);
+          r(1, i) = std::get<1>(dnde);
+          r(2, i) = std::get<2>(dnde);
+        }
+        return result;
+      },
+      doc.c_str(), py::arg("neutrino_energy"), py::arg("parent_energy"));
 }
 
 template <class Field> static auto define_mass(py::class_<Field> *f) -> void {
   f->def_property_readonly_static(
-      "mass", [](py::object /*self*/) { return Field::mass; }, "mass in GeV");
+      "mass", [](const py::object & /*self*/) { return Field::mass; },
+      "mass in GeV");
 }
 
 template <class Field> static auto define_pdg(py::class_<Field> *f) -> void {
   f->def_property_readonly_static(
-      "pdg", [](py::object /*self*/) { return Field::pdg; }, "PDG number");
+      "pdg", [](const py::object & /*self*/) { return Field::pdg; },
+      "PDG number");
 }
 
 template <class Field> static auto define_gen(py::class_<Field> *f) -> void {
   f->def_property_readonly_static(
-      "gen", [](py::object /*self*/) { return Field::gen; },
+      "gen", [](const py::object & /*self*/) { return Field::gen; },
       "Generation of the fermion");
 }
 
@@ -330,6 +471,8 @@ PYBIND11_MODULE(fields, m) { // NOLINT
   define_pdg(&muon);
   define_gen(&muon);
   define_dnde_photon(&muon);
+  define_dnde_positron(&muon);
+  define_dnde_neutrino(&muon);
 
   auto tau = py::class_<Tau>(m, "Tau");
   tau.def(py::init<>());
@@ -443,6 +586,8 @@ PYBIND11_MODULE(fields, m) { // NOLINT
   define_mass(&chgpion);
   define_pdg(&chgpion);
   define_dnde_photon(&chgpion);
+  define_dnde_positron(&chgpion);
+  define_dnde_neutrino(&chgpion);
 
   // =========================================================================
   // ---- Charged Pion -------------------------------------------------------
@@ -463,4 +608,6 @@ PYBIND11_MODULE(fields, m) { // NOLINT
   define_mass(&chgkaon);
   define_pdg(&chgkaon);
   define_dnde_photon(&chgkaon);
+  define_dnde_neutrino(&chgpion);
+  define_dnde_neutrino(&chgkaon);
 }

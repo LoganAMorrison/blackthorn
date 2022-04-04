@@ -142,20 +142,33 @@ auto vectorized_par(F f, const std::vector<double> &xs) -> std::vector<double> {
 
 template <class F>
 auto vectorized(F f, const py::array_t<double> &xs) -> py::array_t<double> {
-  py::buffer_info bufe = xs.request();
-  if (bufe.ndim != 1) {
-    throw std::runtime_error("Number of dimensions must be 1.");
+  auto x = xs.unchecked<1>();
+  py::array_t<double, py::array::c_style> result(x.shape(0));
+  auto r = result.mutable_unchecked<1>();
+  for (size_t i = 0; i < x.shape(0); ++i) { // NOLINT
+    r(i) = f(x(i));
   }
-  auto spec = py::array_t<double>(bufe.size);
-  py::buffer_info bufs = spec.request();
+  return result;
+}
 
-  auto *ptre = static_cast<double *>(bufe.ptr);
-  auto *ptrs = static_cast<double *>(bufs.ptr);
-
-  for (size_t i = 0; i < bufe.shape[0]; ++i) { // NOLINT
-    ptrs[i] = f(ptre[i]);                      // NOLINT
+template <class F>
+auto vectorized_par(F f, const py::array_t<double> &xs) -> py::array_t<double> {
+  // Not sure if there is a better was to do use std::transform other than
+  // coping data to an std::vector, computing and coping back.
+  auto x = xs.unchecked<1>();
+  // Copy to vector
+  auto xs_vec = std::vector<double>(x.shape(0));
+  for (size_t i = 0; i < x.shape(0); ++i) { // NOLINT
+    xs_vec[i] = x(i);
   }
-  return spec;
+  auto result_vec = vectorized_par(f, xs_vec);
+  // Copy result to numpy
+  py::array_t<double, py::array::c_style> result(x.shape(0));
+  auto r = result.mutable_unchecked<1>();
+  for (size_t i = 0; i < x.shape(0); ++i) { // NOLINT
+    r(i) = result_vec[i];
+  }
+  return result;
 }
 
 // =========================================

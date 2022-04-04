@@ -60,15 +60,19 @@ auto boost_jac(double ep, double mp, double ed, double md, double zl)
  */
 auto boost_delta_function(double e0, double e, double m, double beta)
     -> double {
+  using tools::sqr;
 
-  if (beta > 1.0 || beta <= 0.0) {
+  if (beta <= 0.0 || beta > 1.0) {
+    return 0.0;
+  }
+  if (e < m) {
     return 0.0;
   }
 
-  const double gamma = sqrt(1.0 - tools::sqr(beta));
-  const double k = sqrt(tools::sqr(e) - tools::sqr(m));
-  const double eplus = gamma * (e + beta * k);
+  const double gamma = tools::gamma(beta);
+  const double k = sqrt(sqr(e) - sqr(m));
   const double eminus = gamma * (e - beta * k);
+  const double eplus = gamma * (e + beta * k);
 
   if (e0 <= eminus || eplus <= e0) {
     return 0.0;

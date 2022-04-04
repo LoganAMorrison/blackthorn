@@ -64,13 +64,19 @@ public:
     if (beta < std::numeric_limits<double>::epsilon()) {
       return rest_frame(x2);
     }
-    const double gamma2 = sqr(tools::gamma(beta));
-    const double xm = std::max(XMIN_RF, gamma2 * x2 * (1.0 - beta));
-    const double xp = std::min(XMAX_RF, gamma2 * x2 * (1.0 + beta));
-
-    if (xp - xm < 0) {
+    if (x2 < 0.0) {
+      throw std::domain_error("x must be greater than zero.");
+    }
+    if (beta < 0.0 || beta > 1.0) {
+      throw std::domain_error("Invalid boost velocity. Must be 0 < beta < 1");
+    }
+    // if !(x2 < (1-r^2)(1+beta)), then integrand is zero
+    if (x2 >= XMAX_RF * (1 + beta)) {
       return 0.0;
     }
+
+    const double xm = x2 / (1.0 + beta);
+    const double xp = std::min(XMAX_RF, x2 / (1.0 - beta));
 
     const double pre = PRE * 0.5 / beta;
     const double xmm = 1.0 - xm;
@@ -196,18 +202,20 @@ struct dndx_neutrino { // NOLINT
 
   /// Compute muon-neutrino spectrum in the muon rest-frame
   static auto rest_frame_muon(double x) {
+    using boost::math::tools::evaluate_polynomial;
     using tools::powi;
     using tools::sqr;
+
+    static constexpr double C0 = 6.0 - 6.0 * R2 - 6.0 * R4 + 6.0 * R6;
+    static constexpr double C1 = -22.0 + 18.0 * R2 + 6.0 * R4 - 2.0 * R6;
+    static constexpr double C2 = 30.0 - 18.0 * R2;
+    static constexpr double C3 = -18.0 + 6.0 * R2;
+
     if (x < XMIN_RF || XMAX_RF < x) {
       return 0.0;
     }
-    static constexpr double B1 = -18 + 6 * R2;
-    static constexpr double B2 = 30 - 18 * R2;
-    static constexpr double B3 = -22 + 18 * R2 + 6 * R4 - 2 * R6;
-    static constexpr double B4 = 6 - 6 * R2 - 6 * R4 + 6 * R6;
-    const double poly =
-        std::fma(std::fma(std::fma(std::fma(4, x, B1), x, B2), x, B3), x, B3);
 
+    const double poly = evaluate_polynomial({C0, C1, C2, C3, 4.0}, x);
     return R_FACTOR * sqr(x) * poly / powi<3>(1 - x);
   }
 
@@ -215,71 +223,72 @@ struct dndx_neutrino { // NOLINT
   static auto boosted_electron(double x2, double beta) {
     using tools::sqr;
 
-    if (beta < 0.0 || 1.0 < beta) {
-      return 0.0;
+    if (x2 < 0.0) {
+      throw std::domain_error("x must be greater than zero.");
     }
+    if (beta < 0.0 || beta > 1.0) {
+      throw std::domain_error("Invalid boost velocity. Must be 0 < beta < 1");
+    }
+
     if (beta < std::numeric_limits<double>::epsilon()) {
       return rest_frame_electron(x2);
     }
 
-    if (x2 < XMIN_RF || XMAX_RF * sqrt((1.0 + beta) / (1.0 - beta)) <= x2) {
+    if (x2 >= XMAX_RF * (1 + beta)) {
       return 0.0;
     }
 
     const double pre = R_FACTOR / (2.0 * beta);
-    const double xm = std::max(XMIN_RF, x2 / (1.0 + beta));
+    const double xm = x2 / (1.0 + beta);
     const double xp = std::min(XMAX_RF, x2 / (1.0 - beta));
 
-    if (xm > xp) {
-      return 0.0;
-    }
-    static constexpr double B1 = 3.0 - 6.0 * R2;
-    static constexpr double B2 = -6.0 * R4;
-    const double pp = xp * std::fma(std::fma(-2.0, xp, B1), xp, B2);
-    const double pm = xm * std::fma(std::fma(-2.0, xm, B1), xm, B2);
-    const double lpm = log((1 - xp) / (1 - xm));
-    return 2 * pre * (pp - pm - 6.0 * R4 * lpm);
+    return 2.0 * pre *
+           ((xm - xp) *
+                (-3.0 * (xm + xp) + 2.0 * (3.0 * R4 + sqr(xm) + xm * xp +
+                                           sqr(xp) + 3.0 * R2 * (xm + xp))) -
+            6.0 * R4 * log((1.0 - xp) / (1.0 - xm)));
   }
 
   /// Compute muon-neutrino spectrum give muon velocity
   static auto boosted_muon(double x2, double beta) {
+    using boost::math::tools::evaluate_polynomial;
     using std::fma;
     using tools::sqr;
 
-    if (beta < 0.0 || 1.0 < beta) {
-      return 0.0;
+    static constexpr double C0 = -5.0 + 9.0 * R2 - 18.0 * R4;
+    static constexpr double C1 = 10.0 - 18.0 * R2 + 18.0 * R4 + 6.0 * R6;
+    static constexpr double C2 = 4.0;
+    static constexpr double C3 = -22.0 + 18.0 * R2;
+    static constexpr double C4 = 17.0 - 9.0 * R2;
+    static constexpr double C5 = -4.0;
+    static constexpr double C6 = -2.0 * R4 * (3.0 - R2);
+
+    if (x2 < 0.0) {
+      throw std::domain_error("x must be greater than zero.");
     }
-    if (beta < std::numeric_limits<double>::epsilon()) {
-      return rest_frame_muon(x2);
+    if (beta < 0.0 || beta > 1.0) {
+      throw std::domain_error("Invalid boost velocity. Must be 0 < beta < 1");
     }
 
-    if (x2 < XMIN_RF || XMAX_RF * sqrt((1.0 + beta) / (1.0 - beta)) < x2) {
+    if (beta < std::numeric_limits<double>::epsilon()) {
+      return rest_frame_electron(x2);
+    }
+
+    if (x2 >= XMAX_RF * (1 + beta)) {
       return 0.0;
     }
 
     const double pre = R_FACTOR / (2.0 * beta);
-    const double xm = std::max(XMIN_RF, x2 / (1.0 + beta));
+    const double xm = x2 / (1.0 + beta);
     const double xp = std::min(XMAX_RF, x2 / (1.0 - beta));
+    const double xmm = 1.0 - xm;
+    const double xpm = 1.0 - xp;
 
-    if (xm > xp) {
-      return 0.0;
-    }
-
-    static constexpr double B1 = 17 - 9 * R2;
-    static constexpr double B2 = -22 + 18 * R2;
-    static constexpr double B3 = 9 - 9 * R2 + 18 * R4;
-    static constexpr double B4 = -18 * R4 + 6 * R6;
-    static constexpr double C1 = 2 * R4 * (-3 + R2);
-
-    const double np =
-        xp * fma(fma(fma(fma(-4, xp, B1), xp, B2), xp, B3), xp, B4);
-    const double nm =
-        xm * fma(fma(fma(fma(-4, xm, B1), xm, B2), xm, B3), xm, B4);
-    const double dp = fma(fma(3, xp, -6), xp, 3);
-    const double dm = fma(fma(3, xm, -6), xm, 3);
-    const double lpm = log((1 - xp) / (1 - xm));
-
-    return pre * (np / dp - nm / dm + C1 * lpm);
+    const double rp =
+        evaluate_polynomial({C0, C1, C2, C3, C4, C5}, xp) / (3.0 * sqr(xpm));
+    const double rm =
+        evaluate_polynomial({C0, C1, C2, C3, C4, C5}, xm) / (3.0 * sqr(xmm));
+    return pre * (rp - rm + C6 * log(xpm / xmm));
   }
 };
 
@@ -375,60 +384,5 @@ auto decay_spectrum<Muon>::dnde_positron(const std::vector<double> &eps,
   const auto f = [&](double x) { return dnde_positron(x, emu); };
   return tools::vectorized(f, eps);
 }
-
-// auto decay_spectrum<Muon>::dnde_photon(double egam, double emu) // NOLINT
-//     -> double {
-//   using tools::sqr;
-
-//   if (emu < Muon::mass) {
-//     return 0.0;
-//   }
-
-//   if (emu - Muon::mass < std::numeric_limits<double>::epsilon()) {
-//     return 0.0;
-//   }
-
-//   const double gamma = emu / Muon::mass;
-//   const double beta = sqrt(1.0 - sqr(Muon::mass / emu));
-
-//   // Rescaled variables
-//   const double y = 2 * egam / Muon::mass;
-//   constexpr double r = sqr(Electron::mass / Muon::mass);
-//   // Re-rescaled variables
-//   const double x = y * gamma;
-
-//   // Bounds check
-//   if (x < 0.0 || x >= (1.0 - r) / (1.0 - beta)) {
-//     return 0.0;
-//   }
-
-//   // Upper bound on 'angular' variable (w = 1 - beta * ctheta)
-//   const double wp = (x < (1.0 - r) / (1.0 + beta)) ? 1.0 + beta : (1.0 - r) /
-//   x; const double wm = 1.0 - beta;
-
-//   const double xp = x * wp;
-//   const double xm = x * wm;
-
-//   // Polynomial contribution
-//   double result =
-//       ((xm - xp) *
-//        (102.0 + xm * xp *
-//                     (191.0 + 21.0 * sqr(xm) + xm * (-92.0 + 21.0 * xp) +
-//                      xp * (-92.0 + 21.0 * xp))) /
-//        (12.0 * xm * xp * beta));
-//   // Logarithmic contributions
-//   result += (9.0 + xm * (18.0 + xm * (-18.0 + (9.0 - 2.0 * xm) * xm))) *
-//             log((1.0 - xm) / r) / (3.0 * xm * beta);
-//   result += (-9.0 + xp * (-18.0 + xp * (18.0 + xp * (-9.0 + 2 * xp)))) *
-//             log((1.0 - xp) / r) / (3.0 * xp * beta);
-//   result += 5.0 / beta *
-//             (log((1.0 - xm) / r) * log(xm) - log((1.0 - xp) / r) * log(xp));
-//   result += 4.0 / (3.0 * beta) *
-//             (4.0 * log((1.0 - xp) / (1.0 - xm)) + 7.0 * log(xp / xm));
-//   // PolyLog terms
-//   result += 5.0 / beta * (gsl_sf_dilog(1.0 - xm) - gsl_sf_dilog(1.0 - xp));
-
-//   return result * StandardModel::alpha_em / (3.0 * M_PI * emu);
-// }
 
 } // namespace blackthorn

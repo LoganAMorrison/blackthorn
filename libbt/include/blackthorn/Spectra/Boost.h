@@ -59,16 +59,17 @@ auto boost_delta_function(double e0, double e, double m, double beta) -> double;
  * @param mp mass of the parent particle
  * @param ed energy of the daughter particle in lab-frame
  * @param mp mass of the daughter particle
- * @param ed_ub upper bound on the daughter energy. Default +infinity.
- * @param ed_ub lower bound on the daughter energy. Default -infinity.
+ * @param ed_ul lower bound on the daughter energy. Default 0.
+ * @param ed_ub upper bound on the daughter energy. Default +inf.
  */
 template <class F>
 auto boost_spectrum(F spec_rf, double ep,
                     double mp, // NOLINT
                     double ed, // NOLINT
                     double md, // NOLINT
-                    double ed_ub = std::numeric_limits<double>::infinity(),
-                    double ed_lb = 0.0) -> double {
+                    double ed_lb = 0.0,
+                    double ed_ub = std::numeric_limits<double>::infinity())
+    -> double {
   using boost::math::quadrature::gauss_kronrod;
   static constexpr unsigned int GK_N = 15;
   static constexpr unsigned int GK_MAX_LIMIT = 7;
