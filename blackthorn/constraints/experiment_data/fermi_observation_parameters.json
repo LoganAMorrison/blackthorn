@@ -1,0 +1,160 @@
+{
+  "delta_omega": 2.5e-4,
+  "bootes_I": {
+    "l": 358.1,
+    "b": 69.6,
+    "distance": 66,
+    "log10_J": 18.8,
+    "log10_J_uncer": 0.22
+  },
+  "canes_venatici_II": {
+    "l": 113.6,
+    "b": 82.7,
+    "distance": 160,
+    "log10_J": 17.9,
+    "log10_J_uncer": 0.25
+  },
+  "carina": {
+    "l": 260.1,
+    "b": -22.2,
+    "distance": 105,
+    "log10_J": 18.1,
+    "log10_J_uncer": 0.23
+  },
+  "coma_berenices": {
+    "l": 241.9,
+    "b": 83.6,
+    "distance": 44,
+    "log10_J": 19.0,
+    "log10_J_uncer": 0.25
+  },
+  "draco": {
+    "l": 86.4,
+    "b": 34.7,
+    "distance": 76,
+    "log10_J": 18.8,
+    "log10_J_uncer": 0.16
+  },
+  "fornax": {
+    "l": 237.1,
+    "b": -65.7,
+    "distance": 147,
+    "log10_J": 18.2,
+    "log10_J_uncer": 0.21
+  },
+  "hercules": {
+    "l": 28.7,
+    "b": 36.9,
+    "distance": 132,
+    "log10_J": 18.1,
+    "log10_J_uncer": 0.25
+  },
+  "leo_II": {
+    "l": 220.2,
+    "b": 67.2,
+    "distance": 233,
+    "log10_J": 17.6,
+    "log10_J_uncer": 0.18
+  },
+  "leo_IV": {
+    "l": 265.4,
+    "b": 56.5,
+    "distance": 154,
+    "log10_J": 17.9,
+    "log10_J_uncer": 0.28
+  },
+  "sculptor": {
+    "l": 287.5,
+    "b": -83.2,
+    "distance": 86,
+    "log10_J": 18.6,
+    "log10_J_uncer": 0.18
+  },
+  "segue": {
+    "l": 220.5,
+    "b": 50.4,
+    "distance": 23,
+    "log10_J": 19.5,
+    "log10_J_uncer": 0.29
+  },
+  "sextans": {
+    "l": 243.5,
+    "b": 42.3,
+    "distance": 86,
+    "log10_J": 18.4,
+    "log10_J_uncer": 0.27
+  },
+  "ursa_major_II": {
+    "l": 152.5,
+    "b": 37.4,
+    "distance": 32,
+    "log10_J": 19.3,
+    "log10_J_uncer": 0.28
+  },
+  "ursa_minor": {
+    "l": 105.0,
+    "b": 44.8,
+    "distance": 76,
+    "log10_J": 18.8,
+    "log10_J_uncer": 0.19
+  },
+  "willman_1": {
+    "l": 158.6,
+    "b": 56.8,
+    "distance": 38,
+    "log10_J": 19.1,
+    "log10_J_uncer": 0.31
+  },
+  "bootes_II": { "l": 353.7, "b": 68.9, "distance": 42 },
+  "bootes_III": { "l": 35.4, "b": 75.4, "distance": 47 },
+  "canes_venatici_I": {
+    "l": 74.3,
+    "b": 79.8,
+    "distance": 218,
+    "log10_J": 17.7,
+    "log10_J_uncer": 0.26
+  },
+  "canis_major": { "l": 240.0, "b": -8.0, "distance": 7 },
+  "leo_I": {
+    "l": 226.0,
+    "b": 49.1,
+    "distance": 254,
+    "log10_J": 17.7,
+    "log10_J_uncer": 0.18
+  },
+  "leo_V": {
+    "l": 261.9,
+    "b": 58.5,
+    "distance": 178,
+    "log10_J": null,
+    "log10_J_uncer": null
+  },
+  "pisces_II": {
+    "l": 79.2,
+    "b": -47.1,
+    "distance": 182,
+    "log10_J": null,
+    "log10_J_uncer": null
+  },
+  "sagittarius": {
+    "l": 5.6,
+    "b": -14.2,
+    "distance": 26,
+    "log10_J": null,
+    "log10_J_uncer": null
+  },
+  "segue_2": {
+    "l": 149.4,
+    "b": -38.1,
+    "distance": 35,
+    "log10_J": null,
+    "log10_J_uncer": null
+  },
+  "ursa_major_I": {
+    "l": 159.4,
+    "b": 54.4,
+    "distance": 97,
+    "log10_J": 18.3,
+    "log10_J_uncer": 0.24
+  }
+}

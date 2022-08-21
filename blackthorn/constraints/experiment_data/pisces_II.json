@@ -1,0 +1,2606 @@
+{
+  "id": "pisces_II",
+  "galaxyName": "Pisces II",
+  "galacticLongitude": 79.2,
+  "galacticLatitude": -47.1,
+  "angularSize": 0.00025,
+  "distance": 182,
+  "observedJFactor": {
+    "mean": null,
+    "uncertainty": null
+  },
+  "data": [
+    {
+      "lowerEnergy": 500.0,
+      "upperEnergy": 666.760716,
+      "fluxUpperLimit": 1.018e-07,
+      "differentialFluxUpperLimit": 3.5369e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.00254446693
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": 0.00209084621
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": 0.00173253951
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": 0.001084
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0001051935
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0023332067
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00665205837
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0154525137
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0346007914
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0794765481
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.192254596
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.490790878
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.3020648
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -3.50628095
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -9.36347434
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -24.3573688
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -61.037197
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -146.587504
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -337.186925
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -744.663897
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -1585.25662
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -3267.56248
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -6549.39143
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -12815.9084
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -24572.1604
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 666.760716,
+      "upperEnergy": 889.139705,
+      "fluxUpperLimit": 1.5584e-07,
+      "differentialFluxUpperLimit": 5.4144e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": -0.321782362
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.31914938
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.317108514
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.31349726
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.307132155
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.295991775
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.276741362
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.244256667
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.191888284
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.115158577
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0271856468
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.00837190129
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.344585248
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -1.87057215
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -6.75133488
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -20.1474353
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -53.5913588
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -131.547726
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -303.695435
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -667.308497
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -1407.46409
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -2868.8443
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -5683.55821
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -10998.2966
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -20877.6699
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 889.139705,
+      "upperEnergy": 1185.68685,
+      "fluxUpperLimit": 8.0813e-08,
+      "differentialFluxUpperLimit": 2.8076e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000582291903
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000269285627
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.000939814943
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00214896534
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00435205821
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00843633961
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0162223243
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0317011989
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0642795283
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.137595898
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.3135923
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.756402952
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.89206911
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -4.77618941
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -11.8709825
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -28.5823152
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -66.1774887
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -147.192202
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -315.323015
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -653.405906
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -1315.8478
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -2586.64665
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -4982.63486
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -9436.86262
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -17624.294
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 1185.68685,
+      "upperEnergy": 1581.13883,
+      "fluxUpperLimit": 3.8752e-08,
+      "differentialFluxUpperLimit": 1.3465e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 8.65657057e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00533459278
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00949259535
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.0169000454
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0301146729
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.053746388
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0961847445
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.172940179
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.313384426
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.574999733
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -1.07467297
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -2.05836836
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -4.05342765
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -8.18784255
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -16.8295863
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -34.8235733
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -71.8361258
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -146.737576
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -295.661834
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -586.551443
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -1145.07841
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -2200.65249
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -4168.0893
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -7792.70305
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -14408.2534
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 1581.13883,
+      "upperEnergy": 2108.48252,
+      "fluxUpperLimit": 5.4929e-08,
+      "differentialFluxUpperLimit": 1.9082e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000416861198
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00215890312
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00417523277
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00778591707
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0142854298
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0260888368
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.047836178
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.088806573
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.168434435
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.329129412
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.665504724
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -1.38800521
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -2.95501601
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -6.3394421
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -13.5560447
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -28.6760949
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -59.7236403
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -122.147513
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -245.095389
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -482.650799
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -933.859054
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -1778.33673
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -3339.51235
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -6196.91044
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -11385.6728
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 2108.48252,
+      "upperEnergy": 2811.70663,
+      "fluxUpperLimit": 9.2002e-08,
+      "differentialFluxUpperLimit": 3.1966e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": -0.266987561
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.260974885
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.256366678
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.248323451
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.234486874
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.211291213
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.17416799
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.119627671
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0522689169
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.00184832367
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0576135526
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.432424158
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.5850136
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -4.45618664
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -10.9122756
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -24.5549651
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -52.186994
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -106.459095
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -210.628653
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -407.065007
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -772.399443
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -1444.48908
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -2670.38471
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -4891.62421
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -8895.87977
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 2811.70663,
+      "upperEnergy": 3749.47105,
+      "fluxUpperLimit": 6.2428e-08,
+      "differentialFluxUpperLimit": 2.1689e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 8.60965056e-05
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000988940006
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00184659654
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00341667405
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00634880401
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0119952431
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0233462891
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0473844124
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.100931451
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.224351873
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.510770015
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -1.1624068
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -2.59288609
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -5.61216239
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -11.763444
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -23.9333082
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -47.4513505
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -92.0764633
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -175.577933
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -330.144607
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -613.78719
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -1130.58356
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -2066.64202
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -3754.04105
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -6784.55013
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 3749.47105,
+      "upperEnergy": 5000.0,
+      "fluxUpperLimit": 3.7273e-08,
+      "differentialFluxUpperLimit": 1.295e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 1.02995728e-08
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.0063420688
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.0112786147
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.0200585472
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0356760611
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0634620569
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.112916429
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.200995379
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.358046224
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.638628679
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -1.14153133
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -2.04745769
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -3.69109876
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -6.69945146
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -12.2527255
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -22.5603034
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -41.7045772
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -77.1287459
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -142.286341
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -261.386324
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -477.862709
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -869.425345
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -1574.78303
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -2841.14259
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -5108.6973
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 5000.0,
+      "upperEnergy": 6667.60716,
+      "fluxUpperLimit": 3.9109e-08,
+      "differentialFluxUpperLimit": 1.3588e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 9.94714355e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00612473198
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.0108915301
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.0193683105
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0344426517
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0612498551
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.108923121
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.193707618
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.344503714
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.612741781
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -1.0899963
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -1.93947398
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -3.45250235
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -6.1503978
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -10.9693902
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -19.5984013
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -35.0970919
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -63.0194037
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -113.429405
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -204.476277
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -368.711702
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -664.283687
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -1194.83852
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -2144.94797
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -3843.14116
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 6667.60716,
+      "upperEnergy": 8891.39705,
+      "fluxUpperLimit": 5.0583e-08,
+      "differentialFluxUpperLimit": 1.7574e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 7.69000508e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00473494702
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.0084200887
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.014973352
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0266270486
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0473510939
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0842058692
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.14974911
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.266319556
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.473665502
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.842544752
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -1.49901385
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -2.66793358
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -4.7512263
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -8.46941044
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -15.1188845
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -27.0404161
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -48.4683257
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -87.0546688
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -156.579001
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -281.745965
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -506.687636
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -910.067395
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -1631.94582
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -2921.5727
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 8891.39705,
+      "upperEnergy": 11856.8685,
+      "fluxUpperLimit": 1.0822e-07,
+      "differentialFluxUpperLimit": 3.7598e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000108142689
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00189134184
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.0034480996
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00621774593
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0111470422
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0199256055
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0355769019
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0635362788
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.113650562
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.203978606
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.368240529
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.670857436
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.23773095
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -2.31811082
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -4.40277489
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -8.4366449
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -16.1888134
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -30.8977372
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -58.4098173
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -109.200447
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -201.966189
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -370.01297
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -672.624519
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -1215.30014
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -2185.77806
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 11856.8685,
+      "upperEnergy": 15811.3883,
+      "fluxUpperLimit": 9.186e-08,
+      "differentialFluxUpperLimit": 3.1919e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 4.22255653e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00259991605
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00462340862
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00822180469
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0146209508
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0260010287
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0462399077
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0822363505
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.146267177
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.260191842
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.462969083
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.824143702
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.4681807
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -2.61870385
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -4.67956355
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -8.38400008
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -15.0675384
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -27.1590196
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -49.0484326
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -88.6112059
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -159.90068
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -287.935109
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -517.225479
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -926.96051
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -1658.0253
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 15811.3883,
+      "upperEnergy": 21084.8252,
+      "fluxUpperLimit": 1.2063e-07,
+      "differentialFluxUpperLimit": 4.1906e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 3.21256266e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.00197791552
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00351730983
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00625482816
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0111230433
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0197805408
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0351774137
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0625618452
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.111273149
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.197939788
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.352195498
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.62693152
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -1.11677962
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -1.99165576
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -3.55801849
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -6.37091798
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -11.4374104
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -20.5803869
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -37.0815447
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -66.8157857
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -120.261707
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -216.077559
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -387.467949
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -693.516828
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -1239.35097
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 21084.8252,
+      "upperEnergy": 28117.0663,
+      "fluxUpperLimit": 2.2799e-07,
+      "differentialFluxUpperLimit": 7.9215e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 8.23752737e-06
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000905417182
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00161669387
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00288197039
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00513333685
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00914115908
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0162816166
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0290215182
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0518083512
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0927373278
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.166761606
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.302074644
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.553119269
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -1.02711263
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -1.9361094
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -3.69225931
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -7.07087035
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -13.4847446
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -25.4602622
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -47.4870839
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -87.5389642
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -159.782098
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -289.392395
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -521.129085
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -934.592182
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 28117.0663,
+      "upperEnergy": 37494.7105,
+      "fluxUpperLimit": 1.8422e-07,
+      "differentialFluxUpperLimit": 6.4002e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 2.113552e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.0013013326
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00231413462
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00411517959
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00731794079
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.0130133451
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0231413653
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0411518153
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0731794281
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.130133474
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.231413685
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.411518211
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.731794422
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -1.30133514
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -2.31413809
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -4.11518599
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -7.31795646
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -13.01339
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -23.1415023
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -41.1522416
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -73.1807578
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -130.1376
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -231.426331
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -411.55617
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -731.904692
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 37494.7105,
+      "upperEnergy": 50000.0,
+      "fluxUpperLimit": 2.5426e-07,
+      "differentialFluxUpperLimit": 8.8341e-07,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 1.69783246e-05
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000924525745
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.0016572804
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00296032601
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00527751492
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00939815507
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.016725902
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0297569913
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.052930881
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0941435979
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.167440977
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.297814484
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.52974948
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.942486311
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -1.67733173
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -2.98669186
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -5.32237508
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -9.49473448
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -16.9582324
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -30.319325
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -54.2335838
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -96.9917623
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -173.337951
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -309.490546
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -552.086146
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 50000.0,
+      "upperEnergy": 66676.0716,
+      "fluxUpperLimit": 3.2311e-07,
+      "differentialFluxUpperLimit": 1.1226e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 1.20519417e-09
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000742048741
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.00131957094
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00234656676
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.0041728523
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00742049827
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.0131957202
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0234656786
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0417285343
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.074204995
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.131957218
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.234656812
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.417285401
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.74205011
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -1.31957266
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -2.34656961
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -4.1728587
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -7.4205159
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -13.1957733
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -23.465843
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -41.7290475
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -74.2065935
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -131.962154
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -234.671811
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -417.329822
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 66676.0716,
+      "upperEnergy": 88913.9705,
+      "fluxUpperLimit": 1.239e-06,
+      "differentialFluxUpperLimit": 4.3047e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": -2.81268208
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -2.79070663
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -2.77394695
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -2.74485242
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -2.69521383
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -2.61288643
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -2.48216373
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -2.28703372
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -2.01779503
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -1.67782431
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -1.28554635
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.871609543
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.477119849
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.158494583
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.00193942795
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.151409721
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -0.858908492
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -2.57486795
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -6.11050182
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -12.9262828
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -25.6388569
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -48.9120669
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -91.0357951
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -166.73754
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -302.190126
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 88913.9705,
+      "upperEnergy": 118568.685,
+      "fluxUpperLimit": 5.829e-07,
+      "differentialFluxUpperLimit": 2.0251e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 6.67938593e-10
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000411251887
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.000731321292
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00130049414
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00231264256
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00411252543
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00731322067
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0130049529
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.023126449
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0411253153
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0731323865
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.130050085
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.231266232
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.411258644
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.731341181
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -1.3005554
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -2.31283376
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -4.11312265
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -7.31507528
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -13.0106429
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -23.1435504
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -41.1750789
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -73.2705817
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -130.411201
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -232.146135
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 118568.685,
+      "upperEnergy": 158113.883,
+      "fluxUpperLimit": 7.9313e-07,
+      "differentialFluxUpperLimit": 2.756e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000444125151
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": 0.00014191205
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -9.3294209e-05
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.00051155671
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.00125534447
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00257800747
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00493007352
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.0091127095
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0165506218
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0297773614
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0532983685
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.0951258232
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.169508405
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.301786712
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.53703115
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.955413602
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -1.69957638
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -3.0234018
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -5.37901907
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -9.57224731
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -17.0405937
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -30.3501789
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -54.0814637
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -96.4021066
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -171.856118
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 158113.883,
+      "upperEnergy": 210848.252,
+      "fluxUpperLimit": 1.0409e-06,
+      "differentialFluxUpperLimit": 3.616e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000830672349
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": 0.000600334354
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": 0.000421067035
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": 0.000102279652
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.000464613387
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00147270761
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00326538081
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.00645325468
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0121221852
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0222031279
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0401298612
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.0720086042
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.128697923
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.229507392
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.408774861
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.727562716
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -1.29445725
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -2.30255619
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -4.09524428
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -7.28316502
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -12.9522427
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -23.033645
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -40.9618001
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -72.8448718
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -129.547032
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 210848.252,
+      "upperEnergy": 281170.663,
+      "fluxUpperLimit": 1.3932e-06,
+      "differentialFluxUpperLimit": 4.8407e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 2.79506196e-10
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -0.000172093246
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.000306030093
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.000544207231
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.000967752732
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.00172093498
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00306030346
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.00544207486
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.00967752994
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0172093526
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0306030381
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.0544207544
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.0967753122
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.172093561
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.306030487
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.544207871
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -0.967754153
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -1.72093886
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -3.06031513
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -5.44211109
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -9.67764345
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -17.2097084
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -30.6041485
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -54.4241889
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -96.7857719
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 281170.663,
+      "upperEnergy": 374947.105,
+      "fluxUpperLimit": 1.8715e-06,
+      "differentialFluxUpperLimit": 6.502e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 0.000608677785
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": 0.000480570832
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": 0.000380867827
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": 0.000203568028
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.000111720555
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.000672391751
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00166942179
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.00344241979
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.00659530562
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.0122020176
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.022172318
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.039902298
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.0714311563
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.127498276
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.227201281
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.404501081
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -0.719789667
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -1.28046087
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -2.27749095
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -4.05048904
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -7.20337519
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -12.8100882
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -22.7803918
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -40.5103818
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -72.0392719
+        }
+      ]
+    },
+    {
+      "lowerEnergy": 374947.105,
+      "upperEnergy": 500000.0,
+      "fluxUpperLimit": 2.5767e-06,
+      "differentialFluxUpperLimit": 8.9526e-06,
+      "fluxLikelihoods": [
+        {
+          "flux": 0.0,
+          "deltaLogLikelihood": 1.51107127e-10
+        },
+        {
+          "flux": 1.77215601e-10,
+          "deltaLogLikelihood": -9.30381358e-05
+        },
+        {
+          "flux": 3.15138854e-10,
+          "deltaLogLikelihood": -0.000165447919
+        },
+        {
+          "flux": 5.60404936e-10,
+          "deltaLogLikelihood": -0.000294212745
+        },
+        {
+          "flux": 9.96556558e-10,
+          "deltaLogLikelihood": -0.000523192584
+        },
+        {
+          "flux": 1.77215601e-09,
+          "deltaLogLikelihood": -0.000930382717
+        },
+        {
+          "flux": 3.15138854e-09,
+          "deltaLogLikelihood": -0.00165448055
+        },
+        {
+          "flux": 5.60404936e-09,
+          "deltaLogLikelihood": -0.00294212881
+        },
+        {
+          "flux": 9.96556558e-09,
+          "deltaLogLikelihood": -0.0052319272
+        },
+        {
+          "flux": 1.77215601e-08,
+          "deltaLogLikelihood": -0.00930382853
+        },
+        {
+          "flux": 3.15138854e-08,
+          "deltaLogLikelihood": -0.0165448068
+        },
+        {
+          "flux": 5.60404936e-08,
+          "deltaLogLikelihood": -0.0294212895
+        },
+        {
+          "flux": 9.96556558e-08,
+          "deltaLogLikelihood": -0.0523192734
+        },
+        {
+          "flux": 1.77215601e-07,
+          "deltaLogLikelihood": -0.0930382867
+        },
+        {
+          "flux": 3.15138854e-07,
+          "deltaLogLikelihood": -0.16544807
+        },
+        {
+          "flux": 5.60404936e-07,
+          "deltaLogLikelihood": -0.294212896
+        },
+        {
+          "flux": 9.96556558e-07,
+          "deltaLogLikelihood": -0.523192735
+        },
+        {
+          "flux": 1.77215601e-06,
+          "deltaLogLikelihood": -0.930382868
+        },
+        {
+          "flux": 3.15138854e-06,
+          "deltaLogLikelihood": -1.6544807
+        },
+        {
+          "flux": 5.60404936e-06,
+          "deltaLogLikelihood": -2.94212896
+        },
+        {
+          "flux": 9.96556558e-06,
+          "deltaLogLikelihood": -5.23192735
+        },
+        {
+          "flux": 1.77215601e-05,
+          "deltaLogLikelihood": -9.30382869
+        },
+        {
+          "flux": 3.15138854e-05,
+          "deltaLogLikelihood": -16.544807
+        },
+        {
+          "flux": 5.60404936e-05,
+          "deltaLogLikelihood": -29.4212896
+        },
+        {
+          "flux": 9.96556558e-05,
+          "deltaLogLikelihood": -52.3192735
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "title": "Schema for Fermi observation data of Dwarf Spheroidal Galaxies",
+  "type": "object",
+  "properties": {
+    "galaxyName": {
+      "type": "string",
+      "description": "Name of the galaxy"
+    },
+    "id": {
+      "type": "string",
+      "description": "Identifier of the galaxy"
+    },
+    "galacticLongitude": {
+      "type": "number",
+      "description": "Longitude of the galaxy",
+      "units": ["deg"]
+    },
+    "galacticLatitude": {
+      "type": "number",
+      "description": "Latitude of the galaxy",
+      "units": ["deg"]
+    },
+    "angularSize": {
+      "type": "number",
+      "description": "Angular size of observation area",
+      "units": ["sr"]
+    },
+    "distance": {
+      "type": "number",
+      "description": "Distance from Earth to the target",
+      "units": ["kpc"]
+    },
+    "observedJFactor": {
+      "type": "object",
+      "description": "Observed value of the J-factor",
+      "properties": {
+        "mean": {
+          "type": "number",
+          "description": "Mean of the observation",
+          "units": ["GeV^2 cm^-5"]
+        },
+        "uncertainty": {
+          "type": "number",
+          "description": "Uncertainty of the observation",
+          "units": ["GeV^2 cm^-5"]
+        }
+      }
+    },
+    "data": {
+      "type": "array",
+      "description": "Upper limits and likelihoods from the Fermi collaboration",
+      "items": {
+        "type": "object",
+        "properties": {
+          "lowerEnergy": {
+            "type": "number",
+            "description": "Lower energy value of the bin"
+          },
+          "upperEnergy": {
+            "type": "number",
+            "description": "Upper energy value of the bin"
+          },
+          "fluxUpperLimit": {
+            "type": "number",
+            "description": "Upper limit on the total flux"
+          },
+          "differentialFluxUpperLimit": {
+            "type": "number",
+            "description": "Upper limit on the differential flux"
+          },
+          "fluxLikelihoods": {
+            "type": "array",
+            "description": "List of the fluxes and their corresponding likelihoods",
+            "items": {
+              "type": "object",
+              "properties": {
+                "flux": {
+                  "type": "number",
+                  "description": "Value of the flux"
+                },
+                "deltaLogLikelihood": {
+                  "type": "number",
+                  "description": "Log-likelihood of the flux"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

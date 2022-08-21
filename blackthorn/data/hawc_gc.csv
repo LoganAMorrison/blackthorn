@@ -1,0 +1,7 @@
+# Data taken from:
+# Columns are:
+#   1. Lower bin edge (GeV)
+#   2. Upper bin edge (GeV)
+#   3. E^2 d^2Phi/dEdOmega (GeV cm^-2 s^-1 sr^-1)
+#   4. Upper error bar (GeV cm^-2 s^-1 sr^-1)
+#   5. Lower error bar (GeV cm^-2 s^-1 sr^-1)

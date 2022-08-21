@@ -1,5 +1,6 @@
-include README.md LICENSE pybind11/LICENSE
-graft pybind11/include
-graft pybind11/tools
-graft libbt
-global-include CMakeLists.txt *.cmake
+include README.md LICENSE
+include blackthorn/data/*.hdf5
+include blackthorn/data/*.csv
+include blackthorn/constraints/experiment_data/*.json
+
+  
