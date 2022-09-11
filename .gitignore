@@ -235,3 +235,4 @@ cython_debug/
 notebooks/
 .idea/
 ./blackthorn/data/PPPC4DMID2.hdf5
+rundata

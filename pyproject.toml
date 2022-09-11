@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "blackthorn"
+version = "0.1.0"
+description = "Python package for computing spectra from RH neutrinos"
+authors = ["Logan A. Morrison <loganmorrison99@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

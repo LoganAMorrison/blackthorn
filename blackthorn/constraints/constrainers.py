@@ -931,13 +931,13 @@ class RhNeutrinoConstrainer(CompositeConstrainer):
         mx = options.get("mx")
         model_iterator = self._model_iterator(masses, theta=theta, gen=gen)
 
-        self.add_constrainer(FermiDracoConstrainer())
-        # self.add_constrainer(EgretConstrainer())
-        # self.add_constrainer(ComptelConstrainer())
-        # self.add_constrainer(IntegralConstrainer())
-        # self.add_constrainer(FermiConstrainer())
-        # self.add_constrainer(HawcConstrainer())
-        # self.add_constrainer(IceCubeConstrainer())
+        # self.add_constrainer(FermiDracoConstrainer())
+        self.add_constrainer(EgretConstrainer())
+        self.add_constrainer(ComptelConstrainer())
+        self.add_constrainer(IntegralConstrainer())
+        self.add_constrainer(FermiConstrainer())
+        self.add_constrainer(HawcConstrainer())
+        self.add_constrainer(IceCubeConstrainer())
 
         return self._constrain(model_iterator, progress=progress, mx=mx)
 

@@ -157,11 +157,35 @@ def energy_res(e):
 # Generate the photon spectrum **dN/dE**
 model = models.RhNeutrinoMeV(0.5, 1e-3, Gen.Fst)
 spectrum = model.total_conv_spectrum_fn(
-  e_min=1e-4, # Minimum energy needed
-  e_max=0.5,  # Maximum energy needed
+  e_min=1e-4,            # Minimum energy needed
+  e_max=0.5,             # Maximum energy needed
   energy_res=energy_res, # See above
   product=fields.Photon, # Product to generate spectrum for
   npts=1000,             # Number of interpolation points to use
   # cme=...              # Center-of-mass energy (for DM annihilations)
 )
+```
+
+#### Decay Branching Fractions and Partial Widths
+
+To compute decay branching fractions and/or partial decay widths, use:
+
+```python
+from blackthorn import models
+from blackthorn.constants import Gen
+
+model = RhNeutrinoTeV(1e6, 1e-3, Gen.Fst)
+
+# Compute the decay branching rations. Returns a dictionary.
+model.branching_fractions()
+# Output:
+# {
+#   "ve h": ..., # electron-neutrino and Higgs
+#   "ve z": ..., # electron-neutrino and Z
+#   "e w": ...,  # electron and W (both charge states)
+# }
+
+# Compute the partial decay widths
+model.partial_widths()
+# Output: Same format as `branching_fractions`
 ```

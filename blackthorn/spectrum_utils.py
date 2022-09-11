@@ -17,7 +17,7 @@ RealArray = npt.NDArray[np.float64]
 RealOrRealArray = Union[npt.NDArray[np.float64], float]
 
 THIS_DIR = pathlib.Path(__file__).parent
-PPPC4DMID_DFILE = THIS_DIR.joinpath("data").joinpath("PPPC4DMID2.hdf5")
+PPPC4DMID_DFILE = THIS_DIR.joinpath("data").joinpath("PPPC4DMID.hdf5")
 HDMSPECTRA_DFILE = THIS_DIR.joinpath("data").joinpath("HDMSpectra.hdf5")
 
 PDG_TO_NAME = {

@@ -529,8 +529,14 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         return dndx_l + dndx_u + dndx_d
 
     def dndx_components(
-        self, x: RealArray, product: fields.QuantumField, **kwargs
-    ) -> Dict[str, RealArray]:
+        self,
+        x: RealArray,
+        product: fields.QuantumField,
+        *,
+        npts: int = 10_000,
+        nbins: int = 25,
+        apply_br: bool = True,
+    ) -> Dict[str, Spectrum]:
         """
         Compute all components of the decay spectrum of the right-handed neutrino.
 
@@ -555,6 +561,8 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         vv = self._nustr
 
         bfs = self.branching_fractions()
+        if not apply_br:
+            bfs = {key: 1.0 if abs(val) > 0.0 else 0.0 for key, val in bfs.items()}
 
         spec = {}
         key = f"{vv} h"
@@ -572,7 +580,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             key = f"{vv} {qu} {qu}bar"
             if bfs[key] > 0.0:
                 spec[f"{vv} {qu} {qu}bar"] = bfs[key] * self.dndx_v_u_u(
-                    x, product, g, **kwargs
+                    x, product, g, npts=npts, nbins=nbins
                 )
 
         # N -> v + d + d
@@ -580,7 +588,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             key = f"{vv} {qd} {qd}bar"
             if bfs[key] > 0.0:
                 spec[f"{vv} {qd} {qd}bar"] = bfs[key] * self.dndx_v_d_d(
-                    x, product, g, **kwargs
+                    x, product, g, npts=npts, nbins=nbins
                 )
 
         # N -> l + u + d
@@ -589,7 +597,9 @@ class RhNeutrinoGeV(RhNeutrinoBase):
                 key = f"{ll} {qu} {qd}bar"
                 if bfs[key] > 0.0:
                     spec[f"{ll} {qu} {qd}bar"] = (
-                        2 * bfs[key] * self.dndx_l_u_d(x, product, gu, gd, **kwargs)
+                        2
+                        * bfs[key]
+                        * self.dndx_l_u_d(x, product, gu, gd, npts=npts, nbins=nbins)
                     )
 
         # N -> l + u + d
@@ -598,21 +608,25 @@ class RhNeutrinoGeV(RhNeutrinoBase):
                 key = f"v{ll} {ll} {ll}bar"
                 if bfs[key] > 0.0:
                     spec[key] = bfs[key] * self.dndx_v_l_l(
-                        x, product, genn, genn, genn, **kwargs
+                        x, product, genn, genn, genn, npts=npts, nbins=nbins
                     )
             else:
                 key = f"v{ll} {lep} {lep}bar"
                 if bfs[key] > 0.0:
                     spec[key] = bfs[key] * self.dndx_v_l_l(
-                        x, product, genn, g, g, **kwargs
+                        x, product, genn, g, g, npts=npts, nbins=nbins
                     )
                 key = f"v{lep} {ll} {lep}bar"
                 if bfs[key] > 0.0:
                     spec[key] = (
-                        2 * bfs[key] * self.dndx_v_l_l(x, product, g, genn, g, **kwargs)
+                        2
+                        * bfs[key]
+                        * self.dndx_v_l_l(
+                            x, product, g, genn, g, npts=npts, nbins=nbins
+                        )
                     )
 
-        return spec
+        return {key: Spectrum(x, dndx) for key, dndx in spec}
 
     def dndx(self, x: RealArray, product: fields.QuantumField, **kwargs) -> Spectrum:
         """
@@ -637,6 +651,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         dndx = np.zeros_like(x)
         specs = self.dndx_components(x, product, **kwargs)
         for key, val in specs.items():
+            val = val.dndx
             if len(np.nonzero(val == np.nan)[0]) > 0:
                 warnings.warn(f"NaN encountered in {key}. Setting to zero.")
                 dndx += np.nan_to_num(val)

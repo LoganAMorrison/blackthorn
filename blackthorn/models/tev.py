@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union, Tuple
+from typing import Dict, Tuple
 import warnings
 
 import numpy as np
@@ -9,7 +9,7 @@ from .. import fields
 from .base import RhNeutrinoBase, RealArray
 
 _leptons = [fields.Electron, fields.Muon, fields.Tau]
-_neutrinos = [fields.ElectronNeutrino, fields.MuonNeutrino, fields.TauNeutrino]
+# _neutrinos = [fields.ElectronNeutrino, fields.MuonNeutrino, fields.TauNeutrino]
 
 
 class RhNeutrinoTeV(RhNeutrinoBase):
