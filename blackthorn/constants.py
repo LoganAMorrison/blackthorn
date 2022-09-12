@@ -8,6 +8,14 @@ class Gen(enum.IntEnum):
     Snd = 1
     Trd = 2
 
+    def __repr__(self):
+        if self == Gen.Fst:
+            return "1"
+        elif self == Gen.Snd:
+            return "2"
+        else:
+            return "3"
+
 
 # Fermi constant in GeV^-2
 GF = 1.1663787e-5

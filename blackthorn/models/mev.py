@@ -80,8 +80,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
             key = " ".join(["v" + s1, s2, s3 + "bar"])
-            pf = 1.0 if g2 == g3 else 2.0
-            pws[key] = pf * self.width_v_l_l(genv=g1, genl1=g2, genl2=g3)[0]
+            pws[key] = self.width_v_l_l(genv=g1, genl1=g2, genl2=g3)[0]
 
         # N -> v1 + v2 + v3
         gen_tups = _fs_three_lep_gens(self.gen, unique=True)
@@ -262,7 +261,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
             key = " ".join(["v" + s1, s2, s3 + "bar"])
-            pf = 2 if g2 == g3 else 1.0
+            pf = 2 if g2 != g3 else 1.0
             dndxs[key] = pf * self.dndx_v_l_l(
                 x, product, genv=g1, genl1=g2, genl2=g3, npts=npts, nbins=nbins
             )
