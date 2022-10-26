@@ -3,7 +3,7 @@ from typing import Tuple
 
 import numpy as np
 import numpy.typing as npt
-from hazma.rambo import PhaseSpace
+from helax.numpy.phase_space import PhaseSpace
 
 from .. import fields
 from ..constants import ALPHA_EM, GF, Gen
@@ -49,7 +49,7 @@ class WidthVVV(PartialWidth):
                 model, momenta, genv1=int(genv1), genv2=int(genv2), genv3=int(genv3)
             )
 
-        phase_space = PhaseSpace(model.mass, self._fsp_masses, msqrd=msqrd)
+        phase_space = PhaseSpace(cme=model.mass, masses=self._fsp_masses, msqrd=msqrd)
         super().__init__(phase_space, 1.0 / symmetry_factor)
 
 
@@ -68,7 +68,7 @@ def width_n_to_v_l_l(
         )
 
     phase_space = PhaseSpace(self.mass, [0.0, ml1, ml2], msqrd=msqrd)
-    return phase_space.decay_width(n=npts)
+    return phase_space.decay_width(n=npts)  # type: ignore
 
 
 def width_n_to_v_v_v(
@@ -83,7 +83,7 @@ def width_n_to_v_v_v(
 
     phase_space = PhaseSpace(self.mass, [0.0, 0.0, 0.0], msqrd=msqrd)
     width, error = phase_space.decay_width(n=npts)
-    return sym_fact * width, sym_fact * error
+    return sym_fact * width, sym_fact * error  # type: ignore
 
 
 def width_n_to_v_a(self: RhNeutrinoBase) -> float:

@@ -2,20 +2,9 @@ import numpy as np
 from helax.vertices import VertexFFS, VertexFFV
 
 from ..constants import CKM, CW, QE, SW
-from ..fields import (
-    BottomQuark,
-    CharmQuark,
-    DownQuark,
-    Electron,
-    Higgs,
-    Muon,
-    StrangeQuark,
-    Tau,
-    TopQuark,
-    UpQuark,
-    WBoson,
-    ZBoson,
-)
+from ..fields import (BottomQuark, CharmQuark, DownQuark, Electron, Higgs,
+                      Muon, StrangeQuark, Tau, TopQuark, UpQuark, WBoson,
+                      ZBoson)
 
 IM = 1.0j
 SQRT_2 = np.sqrt(2.0)
@@ -110,7 +99,7 @@ def kld_kr_mvr(theta, mass, genn, genv1):
 # ============================================================================
 
 
-def vertex_wnl(theta, *, genn, genl, l_in: bool):
+def vertex_wnl(theta, *, genn, genl, l_in: bool = True):
     """
     Vertex for W,N,L.
     """
@@ -155,31 +144,30 @@ def vertex_wud(*, genu, gend, u_in: bool):
 
 
 def vertex_znv(theta, *, genn, genv):
-    """
-    Vertex for Z,N,V.
-    """
+    """Vertex for Z,N,V."""
     if genn == genv:
-        left = IM * QE * np.sin(2 * theta) / (4 * CW * SW)
-        right = left
+        coupling = IM * QE * np.sin(2 * theta) / (4 * CW * SW)
     else:
-        left = 0.0
-        right = 0.0
+        coupling = 0.0
 
-    return VertexFFV(left=left, right=right)
+    return VertexFFV(
+        left=coupling,
+        right=coupling,
+    )
 
 
 def vertex_zvv(theta, *, genn, genv1, genv2):
     if genv1 == genv2:
-        left = QE / (2 * CW * SW)
+        coupling = QE / (2 * CW * SW)
         if genn == genv1:
-            left = left * np.cos(theta) ** 2
-        left = left
-        right = -left
+            coupling = coupling * np.cos(theta) ** 2
     else:
-        left = 0.0
-        right = 0.0
+        coupling = 0.0
 
-    return VertexFFV(left=left, right=right)
+    return VertexFFV(
+        left=coupling,
+        right=-coupling,
+    )
 
 
 # ============================================================================

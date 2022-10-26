@@ -3,29 +3,28 @@
 """
 # TODO: l + pi + pi0 seems wrong.
 
-import functools
-from typing import Tuple
+from typing import List, Sequence, Union
 
 # import jax
 # import jax.numpy as jnp
 import numpy as np
-import numpy as jnp
+import numpy.typing as npt
 from helax.numpy import amplitudes, wavefunctions
+from helax.vertices import VertexFFS, VertexFFV
 
-from .base import RhNeutrinoBase
 from .. import fields
 from ..constants import CKM_UD, CW, GF, SW
-from ..fields import (
-    ChargedPion,
-    Electron,
-    Higgs,
-    Muon,
-    NeutralPion,
-    Tau,
-    WBoson,
-    ZBoson,
-)
+from ..fields import (ChargedPion, Electron, Higgs, Muon, NeutralPion,
+                      ScalarBoson, Tau, VectorBoson, WBoson, ZBoson)
 from . import feynman_rules
+from .base import RhNeutrinoBase
+
+DiracWf = wavefunctions.DiracWf
+VectorWf = wavefunctions.VectorWf
+ScalarWf = wavefunctions.ScalarWf
+
+Wavefunction = Union[ScalarWf, DiracWf, VectorWf]
+Vertex = Union[VertexFFV, VertexFFS]
 
 MASS_W = WBoson.mass
 MASS_Z = ZBoson.mass
@@ -47,77 +46,143 @@ down_quark_masses = [
 ]
 
 
-# @functools.partial(jax.jit, static_argnums=(1,))
-def spinor_u(momentum, mass):
-    return (
-        wavefunctions.spinor_u(momentum, mass, -1),
-        wavefunctions.spinor_u(momentum, mass, 1),
+def dirac_spinor(
+    spinor_type: str, momentum: npt.NDArray, mass: float
+) -> tuple[DiracWf, DiracWf]:
+    """Generate spinor wavefunctions for all spins.
+
+    Parameters
+    ----------
+    spinor_type: str
+        Type of spinor to generate ("u", "v", "ubar" or "vbar".)
+    momenta: array
+        Momentum of the field.
+    mass: float
+        Mass of the field.
+
+    Returns
+    -------
+    wavefunctions: tuple[DiracWf, DiracWf]
+        Spinor wavefunctions with spin down and up.
+    """
+    if spinor_type == "u":
+        spinor_fn = wavefunctions.spinor_u
+    elif spinor_type == "ubar":
+        spinor_fn = wavefunctions.spinor_ubar
+    elif spinor_type == "v":
+        spinor_fn = wavefunctions.spinor_v
+    elif spinor_type == "vbar":
+        spinor_fn = wavefunctions.spinor_vbar
+    else:
+        raise ValueError(f"Invalid spinor type {type}")
+
+    return (spinor_fn(momentum, mass, -1), spinor_fn(momentum, mass, 1))
+
+
+def charge_conjugate_spinors(psi: Sequence[DiracWf]) -> List[DiracWf]:
+    """Charge conjugate a sequence of spinors."""
+    return [wavefunctions.charge_conjugate(wf) for wf in psi]
+
+
+def vector_current(
+    vector: VectorBoson, vertex: VertexFFV, psi_out: DiracWf, psi_in: DiracWf
+):
+    """Compute the w-current from a pair of spinors.
+
+    Parameters
+    ----------
+    vector: VectorBoson
+        Vector boson to generate current of.
+    vertex: VertexFFV
+        The V-f-f vertex.
+    psi_out: DiracWf
+        Flow-out dirac wavefunction.
+    psi_in: DiracWf
+        Flow-in dirac wavefunction.
+
+    Returns
+    -------
+    current: VectorWf
+        Vector-boson wavefunction generated from the two fermions.
+    """
+    return amplitudes.current_ff_to_v(
+        vertex, vector.mass, vector.width, psi_out, psi_in
     )
 
 
-# @functools.partial(jax.jit, static_argnums=(1,))
-def spinor_v(momentum, mass):
-    return (
-        wavefunctions.spinor_v(momentum, mass, -1),
-        wavefunctions.spinor_v(momentum, mass, 1),
+def scalar_current(
+    scalar: ScalarBoson, vertex: VertexFFS, psi_out: DiracWf, psi_in: DiracWf
+):
+    """Compute the w-current from a pair of spinors.
+
+    Parameters
+    ----------
+    scalar: ScalarBoson
+        Scalar boson to generate current of.
+    vertex: VertexFFV
+        The S-f-f vertex.
+    psi_out: DiracWf
+        Flow-out dirac wavefunction.
+    psi_in: DiracWf
+        Flow-in dirac wavefunction.
+
+    Returns
+    -------
+    current: ScalarWf
+        Scalar-boson wavefunction generated from the two fermions.
+    """
+    return amplitudes.current_ff_to_s(
+        vertex, scalar.mass, scalar.width, psi_out, psi_in
     )
 
 
-# @functools.partial(jax.jit, static_argnums=(1,))
-def spinor_ubar(momentum, mass):
-    return (
-        wavefunctions.spinor_ubar(momentum, mass, -1),
-        wavefunctions.spinor_ubar(momentum, mass, 1),
-    )
+def amplitude(vertex: Vertex, wavefuncs: Sequence[Wavefunction]):
+    """Compute the amplitude given a vertex and wavefunctions.
 
+    Parameters
+    ----------
+    vertex: Vertex
+        The vertex joining all wavefunctions.
+    wavefuncs: Sequence[Wavefunction]
+        The wavefunctions to join.
 
-# @functools.partial(jax.jit, static_argnums=(1,))
-def spinor_vbar(momentum, mass):
-    return (
-        wavefunctions.spinor_vbar(momentum, mass, -1),
-        wavefunctions.spinor_vbar(momentum, mass, 1),
-    )
+    Returns
+    -------
+    amplitude: complex array
+        The value(s) of the vertex.
+    """
 
+    if isinstance(vertex, VertexFFV):
+        assert len(wavefuncs) == 3, f"Expected 3 wavefunctions for a {type(vertex)}."
+        psi_out, psi_in, eps = wavefuncs
 
-# @jax.jit
-def charge_conjugate(psi: wavefunctions.DiracWf):
-    return wavefunctions.charge_conjugate(psi)
+        assert isinstance(psi_out, DiracWf), "First wavefunction must be a DiracWf."
+        assert isinstance(psi_in, DiracWf), "Second wavefunction must be a DiracWf."
+        assert isinstance(eps, VectorWf), "Third wavefunction must be a Vector."
 
+        assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
+        assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
 
-# @jax.jit
-def charge_conjugate_spinors(psi: Tuple[wavefunctions.DiracWf, wavefunctions.DiracWf]):
-    return (
-        wavefunctions.charge_conjugate(psi[0]),
-        wavefunctions.charge_conjugate(psi[1]),
-    )
+        return amplitudes.amplitude_ffv(vertex, psi_out, psi_in, eps)
 
+    if isinstance(vertex, VertexFFS):
+        assert len(wavefuncs) == 3, f"Expected 3 wavefunctions for a {type(vertex)}."
+        psi_out, psi_in, scalar = wavefuncs
 
-# @functools.partial(jax.jit, static_argnums=(0,))
-def current_w(vertex, psi_out, psi_in):
-    return amplitudes.current_ff_to_v(vertex, MASS_W, WIDTH_W, psi_out, psi_in)
+        assert isinstance(psi_out, DiracWf), "First wavefunction must be a DiracWf."
+        assert isinstance(psi_in, DiracWf), "Second wavefunction must be a DiracWf."
+        assert isinstance(scalar, ScalarWf), "Third wavefunction must be a ScalarWf."
 
+        assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
+        assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
 
-# @functools.partial(jax.jit, static_argnums=(0,))
-def current_z(vertex, psi_out, psi_in):
-    return amplitudes.current_ff_to_v(vertex, MASS_Z, WIDTH_Z, psi_out, psi_in)
+        return amplitudes.amplitude_ffs(vertex, psi_out, psi_in, scalar)
 
-
-# @functools.partial(jax.jit, static_argnums=(0,))
-def current_h(vertex, psi_out, psi_in):
-    return amplitudes.current_ff_to_s(vertex, MASS_H, WIDTH_H, psi_out, psi_in)
-
-
-# @functools.partial(jax.jit, static_argnums=(0,))
-def amplitude_ffv(vertex, psi_out, psi_in, eps):
-    return amplitudes.amplitude_ffv(vertex, psi_out, psi_in, eps)
-
-
-# @functools.partial(jax.jit, static_argnums=(0,))
-def amplitude_ffs(vertex, psi_out, psi_in, phi):
-    return amplitudes.amplitude_ffs(vertex, psi_out, psi_in, phi)
+    raise ValueError(f"Unexpected vertex type {type(vertex)}")
 
 
 def msqrd_n_to_v_l_l(self: RhNeutrinoBase, momenta, *, genv, genl1, genl2):
+    """Compute the squared matrix element N -> nu + l + lbar."""
     mass = self.mass
     theta = self.theta
     genn = self.gen
@@ -125,65 +190,68 @@ def msqrd_n_to_v_l_l(self: RhNeutrinoBase, momenta, *, genv, genl1, genl2):
     pv = momenta[:, 0]
     pl1 = momenta[:, 1]
     pl2 = momenta[:, 2]
-    pn = jnp.sum(momenta, axis=1)
+    pn = np.sum(momenta, axis=1)
 
-    n_u = spinor_u(pn, mass)
-    n_vbar = spinor_vbar(pn, mass)  # charge_conjugate_spinors(n_u)
+    n_u = dirac_spinor("u", pn, mass)
+    n_vbar = dirac_spinor("vbar", pn, mass)
 
-    v_ubar = spinor_ubar(pv, 0.0)
-    v_v = spinor_v(pv, 0.0)  # charge_conjugate_spinors(v_ubar)
+    v_ubar = dirac_spinor("ubar", pv, 0.0)
+    v_v = dirac_spinor("v", pv, 0.0)
 
-    l1_u = spinor_ubar(pl1, lepton_masses[genl1])
-    l2_v = spinor_v(pl2, lepton_masses[genl2])
+    l1_ubar = dirac_spinor("ubar", pl1, lepton_masses[genl1])
+    l2_v = dirac_spinor("v", pl2, lepton_masses[genl2])
 
     v_zll = feynman_rules.VERTEX_ZLL
     v_znv = feynman_rules.vertex_znv(theta, genn=genn, genv=genv)
 
-    v_wnl1 = feynman_rules.vertex_wnl(theta, genn=genn, genl=genl1, l_in=False)
-    v_wnl2 = feynman_rules.vertex_wnl(theta, genn=genn, genl=genl2, l_in=True)
+    v_wnl1 = feynman_rules.vertex_wnl(theta, genn=genn, genl=genl1)
+    v_wnl2 = feynman_rules.vertex_wnl(theta, genn=genn, genl=genl2)
 
     v_wvl1 = feynman_rules.vertex_wvl(
-        theta, genn=genn, genv=genv, genl=genl1, l_in=False
+        theta, genn=genn, genv=genv, genl=genl1, l_in=True
     )
     v_wvl2 = feynman_rules.vertex_wvl(
-        theta, genn=genn, genv=genv, genl=genl2, l_in=True
+        theta, genn=genn, genv=genv, genl=genl2, l_in=False
     )
 
     def diagram1(i_n, i_v, i_l1, i_l2):
         n_wf = n_u[i_n]
         v_wf = v_ubar[i_v]
-        l1_wf = l1_u[i_l1]
+        l1_wf = l1_ubar[i_l1]
         l2_wf = l2_v[i_l2]
 
-        z_wf = current_z(v_znv, v_wf, n_wf)
-        return amplitude_ffv(v_zll, l1_wf, l2_wf, z_wf)
+        # (l1, l2), (v, n)
+        return amplitude(
+            v_zll, (l1_wf, l2_wf, vector_current(ZBoson, v_znv, v_wf, n_wf))
+        )
 
     def diagram2(i_n, i_v, i_l1, i_l2):
         n_wf = n_u[i_n]
         v_wf = v_ubar[i_v]
-        l1_wf = l1_u[i_l1]
+        l1_wf = l1_ubar[i_l1]
         l2_wf = l2_v[i_l2]
 
-        w_wf = current_w(v_wnl1, l1_wf, n_wf)
-        return -amplitude_ffv(v_wvl2, v_wf, l2_wf, w_wf)
+        # (v, l2), (l1, n)
+        return -amplitude(
+            v_wvl2, (v_wf, l2_wf, vector_current(WBoson, v_wnl1, l1_wf, n_wf))
+        )
 
     def diagram3(i_n, i_v, i_l1, i_l2):
         n_wf = n_vbar[i_n]
         v_wf = v_v[i_v]
-        l1_wf = l1_u[i_l1]
+        l1_wf = l1_ubar[i_l1]
         l2_wf = l2_v[i_l2]
 
-        w_wf = current_w(v_wnl2, n_wf, l2_wf)
-        return amplitude_ffv(v_wvl1, l1_wf, v_wf, w_wf)
+        # (l1, v), (n, l2)
+        return amplitude(
+            v_wvl1, (l1_wf, v_wf, vector_current(WBoson, v_wnl2, n_wf, l2_wf))
+        )
 
     def _msqrd(i_n, i_v, i_l1, i_l2):
-        return jnp.square(
-            jnp.abs(
-                diagram1(i_n, i_v, i_l1, i_l2)
-                + diagram2(i_n, i_v, i_l1, i_l2)
-                + diagram3(i_n, i_v, i_l1, i_l2)
-            )
-        )
+        d1 = diagram1(i_n, i_v, i_l1, i_l2)
+        d2 = diagram2(i_n, i_v, i_l1, i_l2)
+        d3 = diagram3(i_n, i_v, i_l1, i_l2)
+        return np.square(np.abs(d1 + d2 + d3))
 
     idxs = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1])).T.reshape(-1, 4)
     res = sum(_msqrd(i_n, i_v, i_l1, i_l2) for (i_n, i_v, i_l1, i_l2) in idxs)
@@ -199,96 +267,41 @@ def msqrd_n_to_v_v_v(self: RhNeutrinoBase, momenta, *, genv1, genv2, genv3):
     pv1 = momenta[:, 0]
     pv2 = momenta[:, 1]
     pv3 = momenta[:, 2]
-    pn = jnp.sum(momenta, axis=1)
+    pn = np.sum(momenta, axis=1)
 
-    n_wfs = spinor_u(pn, mass)
-    n_wfs_r = (charge_conjugate(n_wfs[0]), charge_conjugate(n_wfs[1]))
-    n_wfs_r = spinor_vbar(pn, mass)
+    wf_i = dirac_spinor("u", pn, mass)
+    wf_j_1 = dirac_spinor("ubar", pv1, 0.0)
+    wf_k_1 = dirac_spinor("ubar", pv2, 0.0)
+    wf_l_1 = dirac_spinor("v", pv3, 0.0)
+    vji_1 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv1)
+    vkl_1 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv3)
 
-    v1_wfs = spinor_ubar(pv1, 0.0)
-    v1_wfs_r = (charge_conjugate(v1_wfs[0]), charge_conjugate(v1_wfs[1]))
-    v1_wfs_r = spinor_v(pv1, 0.0)
+    wf_j_2 = dirac_spinor("ubar", pv2, 0.0)
+    wf_k_2 = dirac_spinor("ubar", pv1, 0.0)
+    wf_l_2 = dirac_spinor("v", pv3, 0.0)
+    vji_2 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv2)
+    vkl_2 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv1, genv2=genv3)
 
-    v2_wfs = spinor_u(pv2, 0.0)
-    v3_wfs = spinor_v(pv3, 0.0)
+    wf_j_3 = dirac_spinor("ubar", pv3, 0.0)
+    wf_k_3 = dirac_spinor("ubar", pv2, 0.0)
+    wf_l_3 = dirac_spinor("v", pv1, 0.0)
+    vji_3 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv3)
+    vkl_3 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv1)
 
-    v_znv1 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv1)
-    v_znv2 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv2)
-    v_znv3 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv3)
+    def _amplitude_template(wfi, wfj, wfk, wfl, vji, vkl):
+        wfz = vector_current(ZBoson, vji, wfj, wfi)
+        return amplitude(vkl, [wfk, wfl, wfz])
 
-    v_zvv1 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv3)
-    v_zvv2 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv1, genv2=genv3)
-    v_zvv3 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv1, genv2=genv2)
-
-    v_hnv1 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv1)
-    v_hnv2 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv2)
-    v_hnv3 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv3)
-
-    v_hvv1 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv2, genv2=genv3)
-    v_hvv2 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv1, genv2=genv3)
-    v_hvv3 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv1, genv2=genv2)
-
-    def _diagram_1(i_n, i_v1, i_v2, i_v3):
-        v_znv = v_znv1
-        v_zvv = v_zvv1
-        v_hnv = v_hnv1
-        v_hvv = v_hvv1
-
-        wfn = n_wfs[i_n]
-        wf1 = v1_wfs[i_v1]
-        wf2 = v2_wfs[i_v2]
-        wf3 = v3_wfs[i_v3]
-
-        wf_z = current_z(v_znv, wf1, wfn)
-        wf_h = current_h(v_hnv, wf1, wfn)
-
-        return amplitude_ffv(v_zvv, wf2, wf3, wf_z) + amplitude_ffs(
-            v_hvv, wf2, wf3, wf_h
+    def _amplitude(ii, ij, ik, il):
+        wfi = wf_i[ii]
+        return (
+            +_amplitude_template(wfi, wf_j_1[ij], wf_k_1[ik], wf_l_1[il], vji_1, vkl_1)
+            - _amplitude_template(wfi, wf_j_2[ik], wf_k_2[ij], wf_l_2[il], vji_2, vkl_2)
+            - _amplitude_template(wfi, wf_j_3[il], wf_k_3[ik], wf_l_3[ij], vji_3, vkl_3)
         )
 
-    def _diagram_2(i_n, i_v1, i_v2, i_v3):
-        v_znv = v_znv2
-        v_zvv = v_zvv2
-        v_hnv = v_hnv2
-        v_hvv = v_hvv2
-
-        wfn = n_wfs[i_n]
-        wf1 = v1_wfs[i_v1]
-        wf2 = v2_wfs[i_v2]
-        wf3 = v3_wfs[i_v3]
-
-        wf_z = current_z(v_znv, wf2, wfn)
-        wf_h = current_h(v_hnv, wf2, wfn)
-        amp = amplitude_ffv(v_zvv, wf1, wf3, wf_z) + amplitude_ffs(
-            v_hvv, wf1, wf3, wf_h
-        )
-        return -amp
-
-    def _diagram_3(i_n, i_v1, i_v2, i_v3):
-        v_znv = v_znv3
-        v_zvv = v_zvv3
-        v_hnv = v_hnv3
-        v_hvv = v_hvv3
-
-        wfn = n_wfs_r[i_n]
-        wf1 = v1_wfs_r[i_v1]
-        wf2 = v2_wfs[i_v2]
-        wf3 = v3_wfs[i_v3]
-
-        wf_z = current_z(v_znv, wf3, wfn)
-        wf_h = current_h(v_hnv, wf3, wfn)
-        return amplitude_ffv(v_zvv, wf2, wf1, wf_z) + amplitude_ffs(
-            v_hvv, wf2, wf1, wf_h
-        )
-
-    def _msqrd(i_n, i_v1, i_v2, i_v3):
-        return jnp.square(
-            jnp.abs(
-                _diagram_1(i_n, i_v1, i_v2, i_v3)
-                + _diagram_2(i_n, i_v1, i_v2, i_v3)
-                + _diagram_3(i_n, i_v1, i_v2, i_v3)
-            )
-        )
+    def _msqrd(ii, ij, ik, il):
+        return np.square(np.abs(_amplitude(ii, ij, ik, il)))
 
     idxs = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1])).T.reshape(-1, 4)
     res = sum(_msqrd(i_n, i_v1, i_v2, i_v3) for (i_n, i_v1, i_v2, i_v3) in idxs)
@@ -306,10 +319,10 @@ def msqrd_n_to_v_u_u(self: RhNeutrinoBase, momenta, *, genu):
 
     mu = up_quark_masses[genu]
 
-    n_wfs = spinor_u(pn, self.mass)
-    v_wfs = spinor_ubar(pv, 0.0)
-    u1_wfs = spinor_ubar(pu1, mu)
-    u2_wfs = spinor_v(pu2, mu)
+    n_wfs = dirac_spinor("u", pn, self.mass)
+    v_wfs = dirac_spinor("ubar", pv, 0.0)
+    u1_wfs = dirac_spinor("ubar", pu1, mu)
+    u2_wfs = dirac_spinor("v", pu2, mu)
 
     v_znv = feynman_rules.vertex_znv(self.theta, genn=genn, genv=genn)
     v_zuu = feynman_rules.VERTEX_ZUU
@@ -323,13 +336,13 @@ def msqrd_n_to_v_u_u(self: RhNeutrinoBase, momenta, *, genu):
         wfu1 = u1_wfs[i_u1]
         wfu2 = u2_wfs[i_u2]
 
-        wf_z = current_z(v_znv, wfv, wfn)
-        wf_h = current_h(v_hnv, wfv, wfn)
+        wf_z = vector_current(ZBoson, v_znv, wfv, wfn)
+        wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
 
-        return jnp.square(
-            jnp.abs(
-                amplitude_ffv(v_zuu, wfu1, wfu2, wf_z)
-                + amplitude_ffs(v_huu, wfu1, wfu2, wf_h)
+        return np.square(
+            np.abs(
+                amplitude(v_zuu, (wfu1, wfu2, wf_z))
+                + amplitude(v_huu, (wfu1, wfu2, wf_h))
             )
         )
 
@@ -349,10 +362,10 @@ def msqrd_n_to_v_d_d(self: RhNeutrinoBase, momenta, *, gend):
 
     md = down_quark_masses[gend]
 
-    n_wfs = spinor_u(pn, self.mass)
-    v_wfs = spinor_ubar(pv, 0.0)
-    d1_wfs = spinor_ubar(pd1, md)
-    d2_wfs = spinor_v(pd2, md)
+    n_wfs = dirac_spinor("u", pn, self.mass)
+    v_wfs = dirac_spinor("ubar", pv, 0.0)
+    d1_wfs = dirac_spinor("ubar", pd1, md)
+    d2_wfs = dirac_spinor("v", pd2, md)
 
     v_znv = feynman_rules.vertex_znv(self.theta, genn=genn, genv=genn)
     v_zdd = feynman_rules.VERTEX_ZDD
@@ -366,13 +379,13 @@ def msqrd_n_to_v_d_d(self: RhNeutrinoBase, momenta, *, gend):
         wfd1 = d1_wfs[i_d1]
         wfd2 = d2_wfs[i_d2]
 
-        wf_z = current_z(v_znv, wfv, wfn)
-        wf_h = current_h(v_hnv, wfv, wfn)
+        wf_z = vector_current(ZBoson, v_znv, wfv, wfn)
+        wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
 
-        return jnp.square(
-            jnp.abs(
-                amplitude_ffv(v_zdd, wfd1, wfd2, wf_z)
-                + amplitude_ffs(v_hdd, wfd1, wfd2, wf_h)
+        return np.square(
+            np.abs(
+                amplitude(v_zdd, (wfd1, wfd2, wf_z))
+                + amplitude(v_hdd, (wfd1, wfd2, wf_h))
             )
         )
 
@@ -390,12 +403,12 @@ def msqrd_n_to_l_u_d(self: RhNeutrinoBase, momenta, *, genu, gend):
     pl = momenta[:, 0]
     pu = momenta[:, 1]
     pd = momenta[:, 2]
-    pn = jnp.sum(momenta, axis=1)
+    pn = np.sum(momenta, axis=1)
 
-    n_wfs = spinor_u(pn, mass)
-    l_wfs = spinor_ubar(pl, lepton_masses[genn])
-    u_wfs = spinor_ubar(pu, up_quark_masses[genu])
-    d_wfs = spinor_v(pd, down_quark_masses[gend])
+    n_wfs = dirac_spinor("u", pn, mass)
+    l_wfs = dirac_spinor("ubar", pl, lepton_masses[genn])
+    u_wfs = dirac_spinor("ubar", pu, up_quark_masses[genu])
+    d_wfs = dirac_spinor("v", pd, down_quark_masses[gend])
 
     v_wnl = feynman_rules.vertex_wnl(theta, genn=genn, genl=genn, l_in=False)
     v_wud = feynman_rules.vertex_wud(genu=genu, gend=gend, u_in=False)
@@ -406,8 +419,8 @@ def msqrd_n_to_l_u_d(self: RhNeutrinoBase, momenta, *, genu, gend):
         wfu = u_wfs[i_u]
         wfd = d_wfs[i_d]
 
-        wf_z = current_w(v_wnl, wfl, wfn)
-        return jnp.square(jnp.abs(amplitude_ffv(v_wud, wfu, wfd, wf_z)))
+        wf_z = vector_current(WBoson, v_wnl, wfl, wfn)
+        return np.square(np.abs(amplitude(v_wud, (wfu, wfd, wf_z))))
 
     idxs = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1])).T.reshape(-1, 4)
     res = sum(_msqrd(i_n, i_l, i_u, i_d) for (i_n, i_l, i_u, i_d) in idxs)

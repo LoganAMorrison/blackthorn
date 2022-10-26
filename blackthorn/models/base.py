@@ -2,22 +2,23 @@
 blah
 """
 import abc
-from typing import Dict, List, Tuple, Union, Callable, TypeVar, Optional
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import numpy.typing as npt
-from hazma.rambo import PhaseSpace
+from hazma.phase_space import PhaseSpaceDistribution1D, Rambo
+from helax.numpy.phase_space import PhaseSpace
 from scipy import interpolate
 
-from .. import fields
+from .. import fields, spectrum_utils
 from ..constants import Gen
 from ..fields import Higgs
-from .. import spectrum_utils
 from ..spectrum_utils import Spectrum, SpectrumLine, convolved_spectrum_fn
 from .utils import energies_two_body_final_state
 
 RealArray = npt.NDArray[np.float64]
 RealOrComplex = Union[float, complex]
+InvariantMassDistributions = Dict[Tuple[int, int], PhaseSpaceDistribution1D]
 
 T = TypeVar("T", RealArray, float)
 Dndx = Callable[[T, float], T]
@@ -29,6 +30,14 @@ def _convolve(x: RealArray, f: Dndx, dpdys: RealArray, ys: RealArray) -> RealArr
     """
     fs = np.array([p * f(x, y) for (p, y) in zip(dpdys, ys)])
     return np.trapz(fs, ys, axis=0)
+
+
+def _convolve_dist(x: RealArray, f: Dndx, dist: PhaseSpaceDistribution1D) -> RealArray:
+    """
+    Convolve function with distribution.
+    """
+    fs = np.array([p * f(x, y) for (p, y) in zip(dist.probabilities, dist.bin_centers)])
+    return np.trapz(fs, dist.bin_centers, axis=0)
 
 
 class RhNeutrinoGeneralBase:
@@ -197,11 +206,11 @@ class PartialWidth(abc.ABC):
     def width(self, *, npts: int = 10_000) -> float:
         if not self.accessible():
             return 0.0
-        return self._phase_space.decay_width(n=npts)[0] * self._extra_factor
+        return self._phase_space.decay_width(n=npts)[0] * self._extra_factor  # type: ignore
 
     def energy_distributions(
         self, *, npts: int = 10_000, nbins: int = 25
-    ) -> List[Tuple[RealArray, RealArray]]:
+    ) -> List[PhaseSpaceDistribution1D]:
         if not self.accessible():
             return []
 
@@ -209,7 +218,7 @@ class PartialWidth(abc.ABC):
 
     def invariant_mass_distributions(
         self, *, npts: int = 10_000, nbins: int = 25
-    ) -> Dict[Tuple[int, int], Tuple[RealArray, RealArray]]:
+    ) -> Dict[Tuple[int, int], PhaseSpaceDistribution1D]:
         if not self.accessible():
             return dict()
         return self._phase_space.invariant_mass_distributions(n=npts, nbins=nbins)
@@ -362,13 +371,13 @@ class DecaySpectrumThreeBody(DecaySpectrum):
         self._f2 = f2
         self._f3 = f3
 
-        self._phase_space = PhaseSpace(
+        self._phase_space = Rambo(
             self._cme, masses=[f1.mass, f2.mass, f3.mass], msqrd=msqrd
         )
 
         if self._cme < self._f1.mass + self._f2.mass + self._f3.mass:
-            self._energy_distributions = list()
-            self._invariant_mass_distributions = dict()
+            self._energy_distributions: List[PhaseSpaceDistribution1D] = list()
+            self._invariant_mass_distributions: InvariantMassDistributions = dict()
         else:
             self._energy_distributions = self._phase_space.energy_distributions(
                 n=npts, nbins=nbins
@@ -431,55 +440,24 @@ class DecaySpectrumThreeBody(DecaySpectrum):
             raise ValueError(f"Invalid product {product.pdg}")
 
         # Handle decay contributions
-        if dnde1 is not None:
-            probs, parent_energies = self._energy_distributions[0]
-            dnde += _convolve(e, dnde1, probs, parent_energies)
-
-        if dnde2 is not None:
-            probs, parent_energies = self._energy_distributions[1]
-            dnde += _convolve(e, dnde2, probs, parent_energies)
-
-        if dnde3 is not None:
-            probs, parent_energies = self._energy_distributions[2]
-            dnde += _convolve(e, dnde3, probs, parent_energies)
+        for i, dndef in enumerate((dnde1, dnde2, dnde3)):
+            if dndef is not None:
+                dist = self._energy_distributions[i]
+                dnde += _convolve_dist(e, dndef, dist)
 
         # Handle FSR contributions
-        if dnde_fsr1 is not None and fsr:
-            probs, ss = self._invariant_mass_distributions[(0, 1)]
-            dnde += 0.5 * _convolve(e, dnde_fsr1, probs, ss)
-            probs, ss = self._invariant_mass_distributions[(0, 2)]
-            dnde += 0.5 * _convolve(e, dnde_fsr1, probs, ss)
-
-        if dnde_fsr2 is not None and fsr:
-            probs, ss = self._invariant_mass_distributions[(0, 1)]
-            dnde += 0.5 * to_e * _convolve(e, dnde_fsr2, probs, ss)
-            probs, ss = self._invariant_mass_distributions[(1, 2)]
-            dnde += 0.5 * to_e * _convolve(e, dnde_fsr2, probs, ss)
-
-        if dnde_fsr3 is not None and fsr:
-            probs, ss = self._invariant_mass_distributions[(0, 2)]
-            dnde += 0.5 * _convolve(e, dnde_fsr3, probs, ss)
-            probs, ss = self._invariant_mass_distributions[(1, 2)]
-            dnde += 0.5 * _convolve(e, dnde_fsr3, probs, ss)
+        pair_iter = (((0, 1), (0, 2)), ((0, 1), (1, 2)), ((0, 2), (1, 2)))
+        dnde_fsr_iter = (dnde_fsr1, dnde_fsr2, dnde_fsr3)
+        for pairs, dnde_fsrf in zip(pair_iter, dnde_fsr_iter):
+            if dnde_fsrf is not None and fsr:
+                for pair in pairs:
+                    mdist = self._invariant_mass_distributions[pair]
+                    dnde += 0.5 * to_e * _convolve_dist(e, dnde_fsrf, mdist)
 
         # Handle cases where final-state particle == product
-        if self._f1 == product or self._f2 == product or self._f3 == product:
-            edists = self._energy_distributions
-
-            if self._f1 == product:
-                dpdes, es = edists[0]
-                interp = interpolate.InterpolatedUnivariateSpline(es, dpdes, k=1, ext=1)
-                dnde += interp(e)  # type: ignore
-
-            if self._f2 == product:
-                dpdes, es = edists[1]
-                interp = interpolate.InterpolatedUnivariateSpline(es, dpdes, k=1, ext=1)
-                dnde += interp(e)  # type: ignore
-
-            if self._f3 == product:
-                dpdes, es = edists[2]
-                interp = interpolate.InterpolatedUnivariateSpline(es, dpdes, k=1, ext=1)
-                dnde += interp(e)  # type: ignore
+        for i, f in enumerate([self._f1, self._f2, self._f3]):
+            if f == product:
+                dnde += self._energy_distributions[i](e)
 
         dndx = to_e * dnde
         return Spectrum(x, dndx)

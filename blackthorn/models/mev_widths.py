@@ -1,10 +1,12 @@
 from typing import Tuple
 
 import numpy as np
-from hazma.rambo import PhaseSpace
+from hazma.phase_space import Rambo
+from helax.numpy.utils import kallen_lambda
 
 from ..constants import CKM_UD, CKM_US, CW, GF, SW
-from ..fields import ChargedKaon, ChargedPion, Electron, Eta, Muon, NeutralPion, Tau
+from ..fields import (ChargedKaon, ChargedPion, Electron, Eta, Muon,
+                      NeutralPion, Tau)
 from . import feynman_rules
 from .base import RhNeutrinoBase
 from .msqrd import msqrd_n_to_l_pi_pi0
@@ -13,17 +15,20 @@ _lepton_masses = [Electron.mass, Muon.mass, Tau.mass]
 
 
 def _width_n_to_m_v(self: RhNeutrinoBase, mm: float) -> float:
-    if self.mass < mm:
+    mn = self.mass
+    xh = mm / mn
+    if 1 < xh:
         return 0.0
 
     fpi = NeutralPion.decay_constant
     return (
-        fpi**2
-        * GF**2
-        * (self.mass**2 - mm**2)
-        * (-(mm**2) + self.mass**2)
-        * np.sin(2 * self.theta) ** 2
-    ) / (32.0 * CW**4 * np.pi * self.mass)
+        GF**2
+        * fpi**2
+        * mn**3
+        / (16 * np.pi)
+        * self.theta**2
+        * (1 - xh**2) ** 2
+    )
 
 
 def width_n_to_pi0_v(self: RhNeutrinoBase) -> float:
@@ -34,24 +39,46 @@ def width_n_to_eta_v(self: RhNeutrinoBase) -> float:
     return _width_n_to_m_v(self, Eta.mass) / 3.0
 
 
+# def _width_n_to_m_l(self: RhNeutrinoBase, mm: float, ckm2: float) -> float:
+#     fpi = NeutralPion.decay_constant
+#     ml = _lepton_masses[int(self.gen)]
+#     mn = self.mass
+
+#     if mn < mm + ml:
+#         return 0.0
+
+#     return (
+#         fpi**2
+#         * GF**2
+#         * ckm2
+#         * np.sqrt(
+#             ml**4 + (mm**2 - mn**2) ** 2 - 2 * ml**2 * (mm**2 + mn**2)
+#         )
+#         * (ml**4 - mm**2 * mn**2 + mn**4 - ml**2 * (mm**2 + 2 * mn**2))
+#         * np.sin(self.theta) ** 2
+#     ) / (8.0 * np.pi * mn**3)
+
+
 def _width_n_to_m_l(self: RhNeutrinoBase, mm: float, ckm2: float) -> float:
     fpi = NeutralPion.decay_constant
-    ml = _lepton_masses[int(self.gen)]
+    xl = _lepton_masses[int(self.gen)] / self.mass
+    xh = mm / self.mass
     mn = self.mass
 
-    if mn < mm + ml:
+    if 1 < xh + xl:
         return 0.0
 
+    xl2 = xl**2
+    xh2 = xh**2
+
     return (
-        fpi**2
-        * GF**2
+        GF**2
+        * fpi**2
+        * mn**3
         * ckm2
-        * np.sqrt(
-            ml**4 + (mm**2 - mn**2) ** 2 - 2 * ml**2 * (mm**2 + mn**2)
-        )
-        * (ml**4 - mm**2 * mn**2 + mn**4 - ml**2 * (mm**2 + 2 * mn**2))
-        * np.sin(self.theta) ** 2
-    ) / (8.0 * np.pi * mn**3)
+        / (8 * np.pi)
+        * ((1.0 - xl2) ** 2 - xh2 * (1.0 + xl2) * np.sqrt(kallen_lambda(1.0, xh2, xl2)))
+    )
 
 
 def width_n_to_pi_l(self: RhNeutrinoBase) -> float:
@@ -106,5 +133,5 @@ def width_n_to_l_pi_pi0(self: RhNeutrinoBase, *, npts: int) -> Tuple[float, floa
     def msqrd(momenta):
         return msqrd_n_to_l_pi_pi0(self, momenta)
 
-    phase_space = PhaseSpace(self.mass, [ml, mpi, mpi0], msqrd=msqrd)
+    phase_space = Rambo(self.mass, [ml, mpi, mpi0], msqrd=msqrd)
     return phase_space.decay_width(n=npts)

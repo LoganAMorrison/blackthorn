@@ -626,7 +626,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
                         )
                     )
 
-        return {key: Spectrum(x, dndx) for key, dndx in spec}
+        return {key: Spectrum(x, dndx) for key, dndx in spec.items()}
 
     def dndx(self, x: RealArray, product: fields.QuantumField, **kwargs) -> Spectrum:
         """

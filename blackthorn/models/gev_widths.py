@@ -2,7 +2,7 @@ from typing import Tuple
 
 import numpy as np
 import numpy.typing as npt
-from hazma.rambo import PhaseSpace
+from hazma.phase_space import Rambo
 from hazma.utils import kallen_lambda
 
 from .. import fields
@@ -85,7 +85,7 @@ def width_n_to_v_u_u(
     def msqrd(momenta):
         return msqrd_n_to_v_u_u(self, momenta=momenta, genu=int(genu))
 
-    phase_space = PhaseSpace(self.mass, [0.0, mu, mu], msqrd=msqrd)
+    phase_space = Rambo(self.mass, [0.0, mu, mu], msqrd=msqrd)
     return phase_space.decay_width(n=npts)
 
 
@@ -101,7 +101,7 @@ def width_n_to_v_d_d(
     def msqrd(momenta):
         return msqrd_n_to_v_d_d(self, momenta, gend=int(gend))
 
-    phase_space = PhaseSpace(self.mass, [0.0, md, md], msqrd=msqrd)
+    phase_space = Rambo(self.mass, [0.0, md, md], msqrd=msqrd)
     return phase_space.decay_width(n=npts)
 
 
@@ -118,7 +118,7 @@ def width_n_to_l_u_d(
     def msqrd(momenta):
         return msqrd_n_to_l_u_d(self, momenta, genu=int(genu), gend=int(gend))
 
-    phase_space = PhaseSpace(self.mass, [ml, mu, md], msqrd=msqrd)
+    phase_space = Rambo(self.mass, [ml, mu, md], msqrd=msqrd)
     return phase_space.decay_width(n=npts)
 
 
@@ -130,7 +130,7 @@ class WidthVUU(PartialWidth):
         def msqrd(momenta):
             return msqrd_n_to_v_u_u(model, momenta=momenta, genu=int(genu))
 
-        phase_space = PhaseSpace(model.mass, self._fsp_masses, msqrd=msqrd)
+        phase_space = Rambo(model.mass, self._fsp_masses, msqrd=msqrd)
         super().__init__(phase_space)
 
 
@@ -143,7 +143,7 @@ class WidthVDD(PartialWidth):
         def msqrd(momenta):
             return msqrd_n_to_v_d_d(model, momenta=momenta, gend=int(gend))
 
-        phase_space = PhaseSpace(model.mass, self._fsp_masses, msqrd=msqrd)
+        phase_space = Rambo(model.mass, self._fsp_masses, msqrd=msqrd)
         super().__init__(phase_space)
 
 
@@ -159,5 +159,5 @@ class WidthLUD(PartialWidth):
         def msqrd(momenta):
             return msqrd_n_to_l_u_d(model, momenta, genu=int(genu), gend=int(gend))
 
-        phase_space = PhaseSpace(model.mass, self._fsp_masses, msqrd=msqrd)
+        phase_space = Rambo(model.mass, self._fsp_masses, msqrd=msqrd)
         super().__init__(phase_space)
