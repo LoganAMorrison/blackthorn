@@ -1,30 +1,21 @@
+"""Command-line interface for generating branching fractions."""
+
+import json
 import pathlib
 import warnings
 from typing import List, TypedDict
-import json
 
 import numpy as np
-
 from cleo.commands.command import Command
 from cleo.helpers import option
+from rich.prompt import Confirm
+
+from blackthorn.cli.base import CliConsoleControl
+from blackthorn.constants import Gen
+from blackthorn.models import RhNeutrino
 
 # from cleo.helpers import argument
 
-from rich.prompt import Confirm
-from rich.console import Console
-from rich.progress import (
-    Progress,
-    TextColumn,
-    BarColumn,
-    TaskProgressColumn,
-    TimeRemainingColumn,
-    TimeElapsedColumn,
-)
-
-
-from blackthorn.models import RhNeutrino
-from blackthorn.constants import Gen
-from blackthorn.cli.base import CliConsoleControl
 
 CONSOLE = CliConsoleControl()
 
@@ -36,6 +27,8 @@ INT_TO_GEN = {
 
 
 class ParsedArguments(TypedDict):
+    """Schema for the parsed arguments."""
+
     min_mass: float
     max_mass: float
     num_masses: int
@@ -44,6 +37,8 @@ class ParsedArguments(TypedDict):
 
 
 class BfArguments(TypedDict):
+    """Schema for the branching fraction arguments."""
+
     min_mass: float
     max_mass: float
     num_masses: int
@@ -51,6 +46,8 @@ class BfArguments(TypedDict):
 
 
 class GenerateBranchingFractions(Command):
+    """Command to generate branching fractions."""
+
     name: str = "bf"
     description: str = "Generate branching fractions for RH neutrino decays"
     arguments = []
@@ -97,7 +94,7 @@ class GenerateBranchingFractions(Command):
             override = Confirm.ask(
                 "[yellow bold]File[/yellow bold]"
                 + f" [blue underline]{str(output)}[/blue underline]"
-                + " [yellow bold]already exists. Override?[/yellow bold]",
+                + " [yellow bold]already exists. Overwrite?[/yellow bold]",
             )
             if not override:
                 CONSOLE.print_error("Aborting")
@@ -108,33 +105,33 @@ class GenerateBranchingFractions(Command):
     def __parse_arguments(self) -> ParsedArguments:
         try:
             min_mass = float(self.option("min-mass"))
-        except ValueError as e:
-            CONSOLE.print_error(f"Error parsing min-mass: {str(e)}")
-            raise e
+        except ValueError as err:
+            CONSOLE.print_error(f"Error parsing min-mass: {str(err)}")
+            raise err
 
         try:
             max_mass = float(self.option("max-mass"))
-        except ValueError as e:
-            CONSOLE.print_error(f"Error parsing max-mass: {str(e)}")
-            raise e
+        except ValueError as err:
+            CONSOLE.print_error(f"Error parsing max-mass: {str(err)}")
+            raise err
 
         try:
             max_mass = float(self.option("max-mass"))
-        except ValueError as e:
-            CONSOLE.print_error(f"Error parsing max-mass: {str(e)}")
-            raise e
+        except ValueError as err:
+            CONSOLE.print_error(f"Error parsing max-mass: {str(err)}")
+            raise err
 
         try:
             num_masses = int(self.option("num-masses"))
-        except ValueError as e:
-            CONSOLE.print_error(f"Error parsing num-masses: {str(e)}")
-            raise e
+        except ValueError as err:
+            CONSOLE.print_error(f"Error parsing num-masses: {str(err)}")
+            raise err
 
         try:
             generations = list(map(lambda g: INT_TO_GEN[g], self.option("generation")))
-        except ValueError as e:
+        except ValueError as err:
             CONSOLE.print_error("Error parsing generation")
-            raise e
+            raise err
 
         path = self.__parse_output_file(self.option("output"))
 
@@ -150,10 +147,10 @@ class GenerateBranchingFractions(Command):
         intgen = int(generation) + 1
         model = RhNeutrino(masses[0], generation, 1e-3)
 
-        branching_fractions = dict()
+        branching_fractions = {}
 
-        def format_mass(m):
-            return "{:.2e} GeV".format(m)
+        def format_mass(mass):
+            return f"{mass:.2e} GeV"
 
         with CONSOLE.progress(["mass"]) as progress:
             with warnings.catch_warnings():
@@ -212,5 +209,5 @@ class GenerateBranchingFractions(Command):
                 self._generate_branching_fractions(gen, masses)
             )
 
-        with open(output, "w") as f:
-            json.dump(branching_fractions, f, indent=2)
+        with open(output, "w", encoding="utf-8") as file:
+            json.dump(branching_fractions, file, indent=2)
