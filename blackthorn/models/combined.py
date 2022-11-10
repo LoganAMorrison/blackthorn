@@ -1,14 +1,18 @@
-from typing import Union, Dict, Optional
+"""Right-handed neutrino model valid for any mass."""
+
+# pylint: disable=invalid-name
+
+from typing import Dict, Optional, Union
 
 import numpy as np
 
-from blackthorn.constants import Gen
 from blackthorn import fields
-from blackthorn.spectrum_utils import Spectrum, HDMSpectra, PPPC4DMIDSpectra
+from blackthorn.constants import Gen
+from blackthorn.spectrum_utils import HDMSpectra, PPPC4DMIDSpectra, Spectrum
 
 from .base import RealArray
-from .mev import RhNeutrinoMeV
 from .gev import RhNeutrinoGeV
+from .mev import RhNeutrinoMeV
 from .tev import RhNeutrinoTeV
 
 RhNeutrinoModelType = Union[RhNeutrinoMeV, RhNeutrinoGeV, RhNeutrinoTeV]
@@ -29,6 +33,10 @@ class RhNeutrino:
         Generation of the RH neutrino.
     theta: float
         Mixing angle between RH neutrino and active neutrino.
+    mass_break_points: tuple[float,float]
+        Masses at which model switches from MeV -> GeV and from GeV -> TeV.
+        Default is 5.0 GeV and 1 TeV.
+
 
     Methods
     -------
@@ -43,7 +51,13 @@ class RhNeutrino:
         Compute the total spectrum into a given product.
     """
 
-    def __init__(self, mass: float, gen: Gen, theta: float) -> None:
+    def __init__(
+        self,
+        mass: float,
+        gen: Gen,
+        theta: float,
+        mass_break_points: tuple[float, float] = (5.0, 1e3),
+    ) -> None:
         """
         Parameters
         ----------
@@ -57,19 +71,26 @@ class RhNeutrino:
         self.__mass = mass
         self.__gen = gen
         self.__theta = theta
+        self.__mass_break_points = mass_break_points
 
         self.__model = self.__make_model()
 
     def __make_model(self):
-        mass = self.mass
-        if 0 < self.mass < 5.0:
-            return RhNeutrinoMeV(self.mass, self.theta, self.gen)
-        elif 5.0 <= self.mass < 1e3:
-            return RhNeutrinoGeV(self.mass, self.theta, self.gen)
-        elif 1e3 <= self.mass:
-            return RhNeutrinoTeV(self.mass, self.theta, self.gen)
-        else:
-            raise ValueError(f"Invalid mass: {mass}.")
+        mass = self.__mass
+        theta = self.__theta
+        gen = self.__gen
+        mev_gev_bp, gev_tev_bp = self.__mass_break_points
+
+        if 0 < mass < mev_gev_bp:
+            return RhNeutrinoMeV(mass, theta, gen)
+
+        if mev_gev_bp <= mass < gev_tev_bp:
+            return RhNeutrinoGeV(mass, theta, gen)
+
+        if gev_tev_bp <= mass:
+            return RhNeutrinoTeV(mass, theta, gen)
+
+        raise ValueError(f"Invalid mass: {mass}.")
 
     @property
     def mass(self) -> float:
@@ -156,10 +177,10 @@ class RhNeutrino:
         if isinstance(self.__model, RhNeutrinoTeV):
             # TeV model has no 3-body final states. No need for additional args.
             return self.__model.dndx_components(x=x, product=product)
-        else:
-            return self.__model.dndx_components(
-                x=x, product=product, npts=npts, nbins=nbins, apply_br=apply_br
-            )
+
+        return self.__model.dndx_components(
+            x=x, product=product, npts=npts, nbins=nbins, apply_br=apply_br
+        )
 
     def dndx(
         self,

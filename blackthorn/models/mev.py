@@ -1,17 +1,22 @@
+"""Implementation of the MeV RHN model."""
+
+# pylint: disable=invalid-name,import-outside-toplevel
+
 from typing import Dict
 
 import numpy as np
 
+from .. import fields
 from ..constants import Gen
-from .base import RhNeutrinoBase, RealArray
+from ..spectrum_utils import Spectrum
+from . import mev_spectra
+from .base import RealArray, RhNeutrinoBase
 from .utils import final_state_generations_n_to_three_leptons as _fs_three_lep_gens
 from .utils import final_state_strings_n_to_three_leptons as _fs_three_lep_strs
-from ..spectrum_utils import Spectrum
-from .. import fields
-from . import mev_spectra
 
 
 class RhNeutrinoMeV(RhNeutrinoBase):
+    """RHN model with an MeV-scale RHN."""
 
     from .common_widths import width_n_to_v_a as __width_v_a
     from .common_widths import width_n_to_v_l_l as __width_v_l_l
@@ -27,31 +32,48 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         super().__init__(mass, theta, gen)
 
     def width_v_pi0(self) -> float:
+        """Compute the partial width into a neutrino and neutral pion."""
         return self.__width_pi0_v()
 
     def width_v_eta(self) -> float:
+        """Compute the partial width into a neutrino and an eta."""
         return self.__width_eta_v()
 
     def width_l_pi(self) -> float:
+        """Compute the partial width into a charged lepton and pion."""
         return self.__width_pi_l()
 
     def width_l_k(self) -> float:
+        """Compute the partial width into a charged lepton and kaon."""
         return self.__width_k_l()
 
     def width_v_a(self) -> float:
+        """Compute the partial width into a neutrino and photon."""
         return self.__width_v_a()
 
     def width_v_l_l(self, *, genv: Gen, genl1: Gen, genl2: Gen):
+        """Compute the partial width into a neutrino and two charged leptons.
+
+        Parameters
+        ----------
+        genv: Gen
+            Generation of the active neutrino.
+        genl1,genl2: Gen
+            Generations of the charged leptons.
+        """
         return self.__width_v_l_l(genv=genv, genl1=genl1, genl2=genl2)
 
     def width_v_v_v(self, *, genv1: Gen, genv2: Gen, genv3: Gen):
+        """Compute the partial width into three neutrinos."""
         return self.__width_v_v_v(genv1=genv1, genv2=genv2, genv3=genv3)
 
     def width_v_pi_pi(self):
+        """Compute the partial width into a neutrino and two charged pions."""
         return self.__width_v_pi_pi()
 
     def width_l_pi_pi0(self, *, npts: int = 10_000):
-        return self.__width_l_pi_pi0(npts=npts)
+        """Compute the partial width for N -> l + pi + pi^0."""
+        return self.__width_l_pi_pi0()
 
     def partial_widths(self) -> Dict[str, float]:
         r"""Compute the partial widths of the RH neutrino.
@@ -80,7 +102,13 @@ class RhNeutrinoMeV(RhNeutrinoBase):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
             key = " ".join(["v" + s1, s2, s3 + "bar"])
-            pws[key] = self.width_v_l_l(genv=g1, genl1=g2, genl2=g3)[0]
+
+            # This is to ignore charge conjugate states. For example, we will
+            # accept "ve e mubar", but not "ve mu ebar".
+            if int(g3) < int(g2):
+                continue
+            pf = 2 if g2 != g3 else 1.0
+            pws[key] = pf * self.width_v_l_l(genv=g1, genl1=g2, genl2=g3)[0]
 
         # N -> v1 + v2 + v3
         gen_tups = _fs_three_lep_gens(self.gen, unique=True)
@@ -94,27 +122,33 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         return pws
 
     def branching_fractions(self):
+        """Compute the branching fractions."""
         pws = self.partial_widths()
         width = sum(pws.values())
         return {key: val / width for key, val in pws.items()}
 
     def dndx_v_pi0(self, x: RealArray, product: fields.QuantumField) -> Spectrum:
+        """Compute the spectrum into a given product from N -> nu + pi^0."""
         dndx = mev_spectra.DecaySpectrumVPi0(self)
         return dndx.dndx(x, product)
 
     def dndx_v_eta(self, x: RealArray, product: fields.QuantumField) -> Spectrum:
+        """Compute the spectrum into a given product from N -> nu + eta."""
         dndx = mev_spectra.DecaySpectrumVEta(self)
         return dndx.dndx(x, product)
 
     def dndx_l_pi(self, x: RealArray, product: fields.QuantumField) -> Spectrum:
+        """Compute the spectrum into a given product from N -> l + pi."""
         dndx = mev_spectra.DecaySpectrumLPi(self)
         return dndx.dndx(x, product, fsr=True)
 
     def dndx_l_k(self, x: RealArray, product: fields.QuantumField) -> Spectrum:
+        """Compute the spectrum into a given product from N -> l + K."""
         dndx = mev_spectra.DecaySpectrumLK(self)
         return dndx.dndx(x, product, fsr=True)
 
     def dndx_v_a(self, x: RealArray, product: fields.QuantumField) -> Spectrum:
+        """Compute the spectrum into a given product from N -> nu + gamma."""
         dndx = mev_spectra.DecaySpectrumVA(self)
         return dndx.dndx(x, product)
 
@@ -129,6 +163,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         nbins: int = 25,
         npts: int = 10_000,
     ) -> Spectrum:
+        """Compute the spectrum into a given product from N -> nu + l + l."""
         dndx = mev_spectra.DecaySpectrumVLL(
             self, genv=genv, genl1=genl1, genl2=genl2, nbins=nbins, npts=npts
         )
@@ -145,6 +180,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         nbins: int = 25,
         npts: int = 10_000,
     ) -> Spectrum:
+        """Compute the spectrum into a given product from N -> v + v + v."""
         dndx = mev_spectra.DecaySpectrumVVV(
             self, genv1=genv1, genv2=genv2, genv3=genv3, nbins=nbins, npts=npts
         )
@@ -158,6 +194,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         nbins: int = 25,
         npts: int = 10_000,
     ) -> Spectrum:
+        """Compute the spectrum into a given product from N -> nu + pi + pi."""
         dndx = mev_spectra.DecaySpectrumVPiPi(self, npts=npts, nbins=nbins)
         return dndx.dndx(x, product, fsr=True)
 
@@ -168,6 +205,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
         nbins: int = 25,
         npts: int = 10_000,
     ) -> Spectrum:
+        """Compute the spectrum into a given product from N -> l + pi + pi^0."""
         dndx = mev_spectra.DecaySpectrumLPiPi0(self, nbins=nbins, npts=npts)
         return dndx.dndx(x, product, fsr=True)
 
@@ -261,6 +299,12 @@ class RhNeutrinoMeV(RhNeutrinoBase):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
             key = " ".join(["v" + s1, s2, s3 + "bar"])
+
+            # This is to ignore charge conjugate states. For example, we will
+            # accept "ve e mubar", but not "ve mu ebar".
+            if int(g3) < int(g2):
+                continue
+
             pf = 2 if g2 != g3 else 1.0
             dndxs[key] = pf * self.dndx_v_l_l(
                 x, product, genv=g1, genl1=g2, genl2=g3, npts=npts, nbins=nbins
@@ -273,6 +317,7 @@ class RhNeutrinoMeV(RhNeutrinoBase):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
             key = " ".join(["v" + s1, "v" + s2, "v" + s3])
+
             dndxs[key] = self.dndx_v_v_v(
                 x, product, genv1=g1, genv2=g2, genv3=g3, npts=npts, nbins=nbins
             )

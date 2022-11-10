@@ -1,3 +1,7 @@
+"""Module for working with spectra."""
+
+# pylint: disable=invalid-name
+
 from typing import Union, Optional, Sequence
 
 import numpy as np
@@ -13,6 +17,8 @@ RealOrRealArray = Union[npt.NDArray[np.float64], float]
 
 
 class SpectrumGenerator:
+    """Utility class for generating spectra and delegating spectrum generators."""
+
     def __init__(self) -> None:
         self._generators = {
             "hazma": HazmaSpectra(),

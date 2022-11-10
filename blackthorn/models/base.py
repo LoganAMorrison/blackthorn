@@ -1,6 +1,10 @@
 """
 blah
 """
+
+# pylint: disable=too-many-locals,invalid-name
+
+
 import abc
 from typing import Callable, Dict, List, Optional, Tuple, TypeVar, Union
 
@@ -81,6 +85,8 @@ class RhNeutrinoGeneralBase:
 
 
 class RhNeutrinoBase:
+    """Base class for all RHN models containing a single RHN."""
+
     def __init__(self, mass: float, theta: float, gen: Gen) -> None:
         self._mass = mass
         self._theta = theta
@@ -98,14 +104,17 @@ class RhNeutrinoBase:
 
     @property
     def mass(self) -> float:
+        """The mass of the RHN in GeV."""
         return self._mass
 
     @property
     def theta(self) -> float:
+        """The mixing angle between the RH and LH neutrinos."""
         return self._theta
 
     @property
     def gen(self) -> Gen:
+        """Generation the RHN (and LHN it mixes with.)"""
         return self._gen
 
     @mass.setter
@@ -122,13 +131,38 @@ class RhNeutrinoBase:
 
     @abc.abstractmethod
     def dndx(self, x: RealArray, product: fields.QuantumField, **kwargs) -> Spectrum:
-        pass
+        """Generate the scale-less energy spectrum.
+
+        Parameters
+        ----------
+        x: array
+            Values of the scaled energy x = 2E/mass where the spectrum should
+            be computed.
+        product: QuantumField
+            Particle to compute spectrum of.
+        """
 
     @abc.abstractmethod
     def lines(self, product: fields.QuantumField, **kwargs) -> Dict[str, float]:
-        pass
+        """Compute the locations of the spectral lines.
+
+        Parameters
+        ----------
+        product: QuantumField
+            Particle to compute spectrum of.
+        """
 
     def dnde(self, e: RealArray, product: fields.QuantumField, **kwargs) -> RealArray:
+        """Generate the energy spectrum.
+
+        Parameters
+        ----------
+        e: array
+            Values of the energies where the spectrum should be computed.
+        product: QuantumField
+            Particle to compute spectrum of.
+        """
+
         cme = kwargs.get("cme")
         kwargs = {key: val for key, val in kwargs.items() if not key == "cme"}
         if cme is not None:
@@ -146,24 +180,33 @@ class RhNeutrinoBase:
 
     def total_conv_spectrum_fn(
         self,
-        e_min,
-        e_max,
+        min_energy,
+        max_energy,
         energy_res,
         product: fields.QuantumField,
         npts=1000,
         aeff: Optional[Callable] = None,
         cme: Optional[float] = None,
     ) -> Callable:
+        """Compute the total spectrum convolved with an energy resolution.
+
+        Parameters
+        ----------
+        e: array
+            Values of the energies where the spectrum should be computed.
+        product: QuantumField
+            Particle to compute spectrum of.
+        """
 
         products = [product]
         nus = [fields.ElectronNeutrino, fields.MuonNeutrino, fields.TauNeutrino]
 
-        if self.mass < e_min:
+        if self.mass < min_energy:
 
             def f(e):
                 return np.zeros_like(e)
 
-            f.integral = lambda a, b: 0.0
+            f.integral = lambda *_: 0.0
             return f
 
         if product in nus:
@@ -183,8 +226,8 @@ class RhNeutrinoBase:
             return res * pre
 
         return convolved_spectrum_fn(
-            e_min=e_min,
-            e_max=e_max,
+            e_min=min_energy,
+            e_max=max_energy,
             energy_res=energy_res,
             spec_fn=dnde,
             lines=self.lines(product),
@@ -194,7 +237,7 @@ class RhNeutrinoBase:
 
 
 class PartialWidth(abc.ABC):
-    def __init__(self, phase_space: PhaseSpace, extra_factor: float = 1):
+    def __init__(self, phase_space: Rambo, extra_factor: float = 1):
         self._phase_space = phase_space
         self._extra_factor = extra_factor
 
@@ -248,6 +291,8 @@ class DecaySpectrum(abc.ABC):
 
 
 class DecaySpectrumTwoBody(DecaySpectrum):
+    """Class for generating spectra from a two-body final state."""
+
     def __init__(
         self,
         model: RhNeutrinoBase,

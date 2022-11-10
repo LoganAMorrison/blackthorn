@@ -1,10 +1,11 @@
+"""Feynman rules for the RHN model."""
+
 import numpy as np
 from helax.vertices import VertexFFS, VertexFFV
 
 from ..constants import CKM, CW, QE, SW
 from ..fields import (BottomQuark, CharmQuark, DownQuark, Electron, Higgs,
-                      Muon, StrangeQuark, Tau, TopQuark, UpQuark, WBoson,
-                      ZBoson)
+                      Muon, StrangeQuark, Tau, TopQuark, UpQuark)
 
 IM = 1.0j
 SQRT_2 = np.sqrt(2.0)
@@ -12,10 +13,10 @@ PRE_WVL = QE / (SQRT_2 * SW)
 PRE_ZVL = QE / (2.0 * SW * CW)
 
 
-def _vertex_zff(t3, q):
+def _vertex_zff(weak_isospin, charge):
     return VertexFFV(
-        left=QE * (t3 - q * SW**2) / (SW * CW),
-        right=-q * QE * SW / CW,
+        left=QE * (weak_isospin - charge * SW**2) / (SW * CW),
+        right=-charge * QE * SW / CW,
     )
 
 
@@ -25,7 +26,7 @@ VERTEX_ZDD = _vertex_zff(-0.5, -1.0 / 3)
 
 
 def _vertex_hff(mass):
-    return VertexFFV(
+    return VertexFFS(
         left=-mass / Higgs.vev,
         right=-mass / Higgs.vev,
     )
@@ -37,20 +38,21 @@ VERTEX_HDD = [_vertex_hff(p.mass) for p in [DownQuark, StrangeQuark, BottomQuark
 
 
 def pmns_left(theta, genn, genv):
+    """Compute the left-handed value of the non-zero PMNS matrix."""
     if genn == genv:
         return np.cos(theta) * IM
-    else:
-        return 1.0 + 0.0 * IM
+    return 1.0 + 0.0 * IM
 
 
 def pmns_right(theta, genn, genv):
+    """Compute the right-handed value of the non-zero PMNS matrix."""
     if genn == genv:
         return np.sin(theta) + 0 * IM
-    else:
-        return 0 * IM
+    return 0 * IM
 
 
 def kld_kl(theta, genn, genv1, genv2):
+    """Compute the KL^d * KL."""
     if genv1 == genv2:
         if genn == genv1:
             return np.cos(theta) ** 2
@@ -59,36 +61,42 @@ def kld_kl(theta, genn, genv1, genv2):
 
 
 def kld_kr(theta, genn, genv1):
+    """Compute the KL^d * KR."""
     if genn == genv1:
         return IM * np.cos(theta) * np.sin(theta)
     return 0
 
 
 def krd_kl(theta, genn, genv1):
+    """Compute the KR^d * KL."""
     if genn == genv1:
         return -IM * np.cos(theta) * np.sin(theta)
     return 0
 
 
 def kl_krc_mvr(theta, mass, genn, genv1):
+    """Compute the KL * KR^c * mvr."""
     if genn == genv1:
         return -IM * mass * np.cos(theta) * np.sin(theta)
     return 0
 
 
 def kr_klc_mvl(theta, mass, genn, genv1):
+    """Compute the KR * KL^c * mvl."""
     if genn == genv1:
         return IM * mass * np.sin(theta) ** 2 * np.tan(theta)
     return 0
 
 
 def krd_kl_mvl(theta, mass, genn, genv1):
+    """Compute the KR^d * KL * mvl."""
     if genn == genv1:
         return -IM * mass * np.sin(theta) ** 2 * np.tan(theta)
     return 0
 
 
 def kld_kr_mvr(theta, mass, genn, genv1):
+    """Compute the KL^d * KR * mvr."""
     if genn == genv1:
         return IM * mass * np.sin(theta) * np.cos(theta)
     return 0
@@ -99,7 +107,7 @@ def kld_kr_mvr(theta, mass, genn, genv1):
 # ============================================================================
 
 
-def vertex_wnl(theta, *, genn, genl, l_in: bool = True):
+def vertex_wnl(theta, *, genn, genl, _: bool = True):
     """
     Vertex for W,N,L.
     """
@@ -117,8 +125,8 @@ def vertex_wvl(theta, *, genn, genv, genl, l_in: bool):
     """
     if genv == genl:
         if genn == genv:
-            s = -1.0 if l_in else 1.0
-            left = s * IM * QE / (SQRT_2 * SW) * np.cos(theta)
+            sgn = -1.0 if l_in else 1.0
+            left = sgn * IM * QE / (SQRT_2 * SW) * np.cos(theta)
         else:
             left = QE / (SQRT_2 * SW)
     else:
@@ -157,6 +165,7 @@ def vertex_znv(theta, *, genn, genv):
 
 
 def vertex_zvv(theta, *, genn, genv1, genv2):
+    """Vertex for Z and two neutrinos."""
     if genv1 == genv2:
         coupling = QE / (2 * CW * SW)
         if genn == genv1:
@@ -179,26 +188,23 @@ def vertex_hnv(theta, mass, *, genn, genv):
     """
     Vertex for Z,N,V.
     """
-    vh = Higgs.vev
     if genn == genv:
-        y = mass / vh
-        st = np.sin(theta)
-        ct = np.cos(theta)
-        left = -IM * y * st / ct * (-(ct**2) + st**2)
-        right = -IM * y * st / ct * (-(st**2) + ct**2)
+        yuk = mass / Higgs.vev
+        sint = np.sin(theta)
+        cost = np.cos(theta)
+        tant = np.tan(theta)
+        left = IM * yuk * tant * (cost**2 - sint**2)
     else:
         left = 0.0
-        right = 0.0
-    return VertexFFS(left=left, right=right)
+    return VertexFFS(left=left, right=-left)
 
 
 def vertex_hvv(theta, mass, *, genn, genv1, genv2):
     """
     Vertex for Z,N,V.
     """
-    vh = Higgs.vev
     if genn == genv1 == genv2:
-        c = -2 * mass * np.sin(theta) ** 2 / vh
+        coupling = -2 * mass * np.sin(theta) ** 2 / Higgs.vev
     else:
-        c = 0.0
-    return VertexFFS(left=c, right=c)
+        coupling = 0.0
+    return VertexFFS(left=coupling, right=coupling)

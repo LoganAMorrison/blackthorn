@@ -19,72 +19,52 @@ from .msqrd import (
 
 RealArray = npt.NDArray[np.float_]
 
-_charged_leptons = [fields.Electron, fields.Muon, fields.Tau]
-_neutrinos = [fields.ElectronNeutrino, fields.MuonNeutrino, fields.TauNeutrino]
 _lepton_masses = [Electron.mass, Muon.mass, Tau.mass]
 
 
 class DecaySpectrumVPi0(DecaySpectrumTwoBody):
-    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
-        if model.gen == Gen.Fst:
-            f1 = fields.ElectronNeutrino
-        elif model.gen == Gen.Fst:
-            f1 = fields.MuonNeutrino
-        else:
-            f1 = fields.TauNeutrino
+    """Class for RHN decays into a neutrino and neutral pion."""
 
-        super().__init__(model, f1, fields.NeutralPion, branching_ratio)
+    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
+        neutrino = fields.Neutrino.from_gen(model.gen)
+        super().__init__(model, neutrino, fields.NeutralPion, branching_ratio)
 
 
 class DecaySpectrumVEta(DecaySpectrumTwoBody):
-    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
-        if model.gen == Gen.Fst:
-            f1 = fields.ElectronNeutrino
-        elif model.gen == Gen.Fst:
-            f1 = fields.MuonNeutrino
-        else:
-            f1 = fields.TauNeutrino
+    """Class for RHN decays into a neutrino and eta."""
 
-        super().__init__(model, f1, fields.Eta, branching_ratio)
+    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
+        neutrino = fields.Neutrino.from_gen(model.gen)
+        super().__init__(model, neutrino, fields.Eta, branching_ratio)
 
 
 class DecaySpectrumLPi(DecaySpectrumTwoBody):
-    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
-        if model.gen == Gen.Fst:
-            f1 = fields.Electron
-        elif model.gen == Gen.Fst:
-            f1 = fields.Muon
-        else:
-            f1 = fields.Tau
+    """Class for RHN decays into a charged lepton and charged pion."""
 
-        super().__init__(model, f1, fields.ChargedPion, branching_ratio)
+    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
+        lepton = fields.ChargedLepton.from_gen(model.gen)
+        super().__init__(model, lepton, fields.ChargedPion, branching_ratio)
 
 
 class DecaySpectrumLK(DecaySpectrumTwoBody):
-    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
-        if model.gen == Gen.Fst:
-            f1 = fields.Electron
-        elif model.gen == Gen.Fst:
-            f1 = fields.Muon
-        else:
-            f1 = fields.Tau
+    """Class for RHN decays into a charged lepton and charged kaon."""
 
-        super().__init__(model, f1, fields.ChargedKaon, branching_ratio)
+    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
+        lepton = fields.ChargedLepton.from_gen(model.gen)
+        super().__init__(model, lepton, fields.ChargedKaon, branching_ratio)
 
 
 class DecaySpectrumVA(DecaySpectrumTwoBody):
-    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
-        if model.gen == Gen.Fst:
-            f1 = fields.ElectronNeutrino
-        elif model.gen == Gen.Fst:
-            f1 = fields.MuonNeutrino
-        else:
-            f1 = fields.TauNeutrino
+    """Class for RHN decays into a neutrino and photon."""
 
-        super().__init__(model, f1, fields.Photon, branching_ratio)
+    def __init__(self, model: RhNeutrinoBase, branching_ratio: float = 1):
+        lepton = fields.Neutrino.from_gen(model.gen)
+        super().__init__(model, lepton, fields.Photon, branching_ratio)
 
 
 class DecaySpectrumVLL(DecaySpectrumThreeBody):
+    """Class for RHN decays into a neutrino and two charged leptons."""
+
     def __init__(
         self,
         model: RhNeutrinoBase,
@@ -97,9 +77,9 @@ class DecaySpectrumVLL(DecaySpectrumThreeBody):
         branching_fraction: float = 1,
     ):
 
-        f1 = _neutrinos[genv]
-        f2 = _charged_leptons[genl1]
-        f3 = _charged_leptons[genl2]
+        neutrino = fields.Neutrino.from_gen(genv)
+        lepton1 = fields.ChargedLepton.from_gen(genl1)
+        lepton2 = fields.ChargedLepton.from_gen(genl2)
 
         def msqrd(momenta):
             return msqrd_n_to_v_l_l(
@@ -108,9 +88,9 @@ class DecaySpectrumVLL(DecaySpectrumThreeBody):
 
         super().__init__(
             model,
-            f1,
-            f2,
-            f3,
+            neutrino,
+            lepton1,
+            lepton2,
             msqrd,
             npts=npts,
             nbins=nbins,
@@ -119,6 +99,8 @@ class DecaySpectrumVLL(DecaySpectrumThreeBody):
 
 
 class DecaySpectrumVPiPi(DecaySpectrumThreeBody):
+    """Class for RHN decays into a neutrino and two charged pions."""
+
     def __init__(
         self,
         model: RhNeutrinoBase,
@@ -128,18 +110,17 @@ class DecaySpectrumVPiPi(DecaySpectrumThreeBody):
         branching_fraction: float = 1,
     ):
 
-        f1 = _neutrinos[model.gen]
-        f2 = fields.ChargedPion
-        f3 = fields.NeutralPion
+        neutrino = fields.Neutrino.from_gen(model.gen)
+        pion = fields.ChargedPion
 
         def msqrd(momenta):
             return msqrd_n_to_v_pi_pi(model, momenta=momenta)
 
         super().__init__(
             model,
-            f1,
-            f2,
-            f3,
+            neutrino,
+            pion,
+            pion,
             msqrd,
             npts=npts,
             nbins=nbins,
@@ -148,6 +129,8 @@ class DecaySpectrumVPiPi(DecaySpectrumThreeBody):
 
 
 class DecaySpectrumLPiPi0(DecaySpectrumThreeBody):
+    """Class for RHN decays into a charged lepton and two pions."""
+
     def __init__(
         self,
         model: RhNeutrinoBase,
@@ -157,18 +140,18 @@ class DecaySpectrumLPiPi0(DecaySpectrumThreeBody):
         branching_fraction: float = 1,
     ):
 
-        f1 = _neutrinos[model.gen]
-        f2 = fields.ChargedPion
-        f3 = fields.NeutralPion
+        lepton = fields.ChargedLepton.from_gen(model.gen)
+        charged_pion = fields.ChargedPion
+        neutral_pion = fields.NeutralPion
 
         def msqrd(momenta):
             return msqrd_n_to_l_pi_pi0(model, momenta=momenta)
 
         super().__init__(
             model,
-            f1,
-            f2,
-            f3,
+            lepton,
+            charged_pion,
+            neutral_pion,
             msqrd,
             npts=npts,
             nbins=nbins,
@@ -177,6 +160,8 @@ class DecaySpectrumLPiPi0(DecaySpectrumThreeBody):
 
 
 class DecaySpectrumVVV(DecaySpectrumThreeBody):
+    """Class for RHN decays into three neutrinos."""
+
     def __init__(
         self,
         model: RhNeutrinoBase,
@@ -189,9 +174,9 @@ class DecaySpectrumVVV(DecaySpectrumThreeBody):
         branching_fraction: float = 1,
     ):
 
-        f1 = _neutrinos[genv1]
-        f2 = _neutrinos[genv2]
-        f3 = _neutrinos[genv3]
+        nu1 = fields.Neutrino.from_gen(genv1)
+        nu2 = fields.Neutrino.from_gen(genv2)
+        nu3 = fields.Neutrino.from_gen(genv3)
 
         def msqrd(momenta):
             return msqrd_n_to_v_v_v(
@@ -200,9 +185,9 @@ class DecaySpectrumVVV(DecaySpectrumThreeBody):
 
         super().__init__(
             model,
-            f1,
-            f2,
-            f3,
+            nu1,
+            nu2,
+            nu3,
             msqrd,
             npts=npts,
             nbins=nbins,

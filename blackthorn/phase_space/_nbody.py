@@ -1,7 +1,7 @@
 from typing import Sequence, List, Optional, Dict, Tuple
 
 import numpy as np
-from hazma.rambo import PhaseSpace
+from hazma.phase_space import Rambo
 
 from ..fields import QuantumField
 
@@ -60,7 +60,7 @@ def invariant_mass_distributions_nbody_decay(
             return 1.0
 
     masses = np.array([f.mass for f in final_states])
-    phase_space = PhaseSpace(cme=cme, masses=masses, msqrd=msqrd_)
+    phase_space = Rambo(cme=cme, masses=masses, msqrd=msqrd_)
     dists = phase_space.invariant_mass_distributions(n=npts, nbins=nbins)
 
     return {

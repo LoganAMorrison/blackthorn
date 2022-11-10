@@ -1,5 +1,9 @@
+"""Implementation of the GeV RHN model."""
+
+# pylint: disable=invalid-name,import-outside-toplevel
+
 import warnings
-from typing import Dict, Optional, Union, Tuple
+from typing import Dict, Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -10,9 +14,9 @@ from ..spectrum_utils import PPPC4DMIDSpectra, Spectrum
 from .base import RhNeutrinoBase
 from .common_widths import WidthVLL, WidthVVV
 from .gev_widths import WidthLUD, WidthVDD, WidthVUU
+from .utils import DOWN_QUARK_STR_GEN, LEPTON_STR_GEN, UP_QUARK_STR_GEN
 from .utils import final_state_generations_n_to_three_leptons as _fs_three_lep_gens
 from .utils import final_state_strings_n_to_three_leptons as _fs_three_lep_strs
-from .utils import DOWN_QUARK_STR_GEN, LEPTON_STR_GEN, UP_QUARK_STR_GEN
 
 RealArray = npt.NDArray[np.float64]
 
@@ -44,6 +48,8 @@ def _gen_to_charged_lepton(genl):
 
 
 class RhNeutrinoGeV(RhNeutrinoBase):
+    """Right-handed neutrino model for GeV scale RHNs."""
+
     from .gev_widths import width_n_to_h_v as __width_h_v
     from .gev_widths import width_n_to_l_u_d as __width_l_u_d
     from .gev_widths import width_n_to_v_d_d as __width_v_d_d
@@ -51,33 +57,35 @@ class RhNeutrinoGeV(RhNeutrinoBase):
     from .gev_widths import width_n_to_w_l as __width_w_l
     from .gev_widths import width_n_to_z_v as __width_z_v
 
-    def __init__(self, mass: float, theta: float, gen: Gen) -> None:
-        super().__init__(mass, theta, gen)
-
     def width_v_h(self):
+        """Compute the partial decay with to nu + h."""
         return self.__width_h_v()
 
     def width_v_z(self):
+        """Compute the partial decay with to nu + Z."""
         return self.__width_z_v()
 
     def width_l_w(self):
+        """Compute the partial decay with to l + W."""
         return self.__width_w_l()
 
     def width_l_u_d(self, *, genu: Gen, gend: Gen, npts: int = 10_000) -> float:
         """
         Compute the partial decay with to l + u + dbar.
         """
-        if self.mass > fields.WBoson.mass + _leptons[self.gen].mass:
-            return 0.0
-        # return self.__width_l_u_d(genu=genu, gend=gend)
+        # threshold = fields.ZBoson.mass
+        # if self.mass > threshold:
+        #     return 0.0
+
         return WidthLUD(model=self, genu=genu, gend=gend).width(npts=npts)
 
     def width_v_d_d(self, *, gend: Gen, npts: int = 10_000) -> float:
         """
         Compute the partial decay with to v + d + dbar.
         """
-        if self.mass > fields.ZBoson.mass:
-            return 0.0
+        # threshold = fields.ZBoson.mass
+        # if self.mass > threshold:
+        #     return 0.0
         # return self.__width_v_d_d(gend=gend)
         return WidthVDD(model=self, gend=gend).width(npts=npts)
 
@@ -85,9 +93,9 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         """
         Compute the partial decay with to v + u + ubar.
         """
-        if self.mass > fields.ZBoson.mass:
-            return 0.0
-        # return self.__width_v_u_u(genu=genu)
+        # threshold = fields.ZBoson.mass
+        # if self.mass > threshold:
+        #     return 0.0
         return WidthVUU(model=self, genu=genu).width(npts=npts)
 
     def width_v_l_l(
@@ -96,8 +104,10 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         """
         Compute the partial decay with to v + l + lbar.
         """
-        if self.mass > fields.ZBoson.mass:
-            return 0.0
+        # threshold = fields.ZBoson.mass
+        # if self.mass > threshold:
+        #     return 0.0
+
         return WidthVLL(model=self, genv=genv, genl1=genl1, genl2=genl2).width(
             npts=npts
         )
@@ -105,23 +115,28 @@ class RhNeutrinoGeV(RhNeutrinoBase):
     def width_v_v_v(
         self, *, genv1: Gen, genv2: Gen, genv3: Gen, npts: int = 10_000
     ) -> float:
-        if self.mass > fields.ZBoson.mass:
-            return 0.0
+        """
+        Compute the partial decay with to v + v + v.
+        """
+        # if self.mass > fields.ZBoson.mass:
+        #     return 0.0
         return WidthVVV(model=self, genv1=genv1, genv2=genv2, genv3=genv3).width(
             npts=npts
         )
 
     def partial_widths(self) -> Dict[str, float]:
+        """Compute the partial decay widths of the RHN."""
         ll = self._lepstr
         vv = self._nustr
 
         qus = [("u", Gen.Fst), ("c", Gen.Snd), ("t", Gen.Trd)]
         qds = [("d", Gen.Fst), ("s", Gen.Snd), ("b", Gen.Trd)]
 
-        pws: Dict[str, float] = {}
-        pws[f"{vv} h"] = self.width_v_h()
-        pws[f"{vv} z"] = self.width_v_z()
-        pws[f"{ll} w"] = 2 * self.width_l_w()
+        pws: Dict[str, float] = {
+            f"{vv} h": self.width_v_h(),
+            f"{vv} z": self.width_v_z(),
+            f"{ll} w": 2 * self.width_l_w(),
+        }
 
         # N -> v + u + u
         for qu, g in qus:
@@ -140,6 +155,11 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         for gen_tup, str_tup in zip(gen_tups, str_tups):
             g1, g2, g3 = gen_tup
             s1, s2, s3 = str_tup
+
+            # Two avoid charge conjugated states
+            if int(g3) > int(g2):
+                continue
+
             key = " ".join(["v" + s1, s2, s3 + "bar"])
             pf = 1.0 if g2 == g3 else 2.0
             pws[key] = pf * self.width_v_l_l(genv=g1, genl1=g2, genl2=g3)
@@ -315,7 +335,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             return dndx
 
         vuu = WidthVUU(model=self, genu=genu)
-        ps, ms = vuu.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
+        dist = vuu.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
 
         if genu == Gen.Fst:
             finalstate = "q"
@@ -328,8 +348,8 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             x,
             finalstate=finalstate,
             product=product,
-            invariant_masses=ms,
-            probabilities=ps,
+            invariant_masses=dist.bin_centers,
+            probabilities=dist.probabilities,
         )
 
     def dndx_v_d_d(
@@ -367,7 +387,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             return dndx
 
         vdd = WidthVDD(model=self, gend=gend)
-        ps, ms = vdd.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
+        dist = vdd.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
 
         if gend == Gen.Fst or gend == Gen.Snd:
             finalstate = "q"
@@ -378,8 +398,8 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             x,
             finalstate=finalstate,
             product=product,
-            invariant_masses=ms,
-            probabilities=ps,
+            invariant_masses=dist.bin_centers,
+            probabilities=dist.probabilities,
         )
 
     def dndx_v_l_l(
@@ -423,7 +443,9 @@ class RhNeutrinoGeV(RhNeutrinoBase):
             return np.zeros_like(x)
 
         vll = WidthVLL(model=self, genv=genv, genl1=genl1, genl2=genl2)
-        ps, ms = vll.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
+        dist = vll.invariant_mass_distributions(npts=npts, nbins=nbins)[(1, 2)]
+        ms = dist.bin_centers
+        ps = dist.probabilities
 
         lstrs = {Gen.Fst: "e", Gen.Snd: "mu", Gen.Trd: "tau"}
 
@@ -494,9 +516,11 @@ class RhNeutrinoGeV(RhNeutrinoBase):
 
         lud = WidthLUD(model=self, genu=genu, gend=gend)
         dists = lud.invariant_mass_distributions(npts=npts, nbins=nbins)
+        dist_lu = dists[(0, 1)]
+        dist_ud = dists[(1, 2)]
 
-        ps_lu, ms_lu = dists[(0, 1)]
-        ps_ud, ms_ud = dists[(1, 2)]
+        ms_lu, ps_lu = dist_lu.bin_centers, dist_lu.probabilities
+        ms_ud, ps_ud = dist_ud.bin_centers, dist_ud.probabilities
 
         lstrs = {Gen.Fst: "e", Gen.Snd: "mu", Gen.Trd: "tau"}
         ustrs = {Gen.Fst: "q", Gen.Snd: "c", Gen.Trd: "t"}
@@ -563,22 +587,23 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         bfs = self.branching_fractions()
         if not apply_br:
             bfs = {key: 1.0 if abs(val) > 0.0 else 0.0 for key, val in bfs.items()}
+        bfs = {key: val for key, val in bfs.items() if val > 0.0}
 
         spec = {}
         key = f"{vv} h"
-        if bfs[key] > 0.0:
+        if bfs.get(key) is not None:
             spec[key] = bfs[key] * self.dndx_v_h(x, product)
         key = f"{vv} z"
-        if bfs[key] > 0.0:
+        if bfs.get(key) is not None:
             spec[key] = bfs[key] * self.dndx_v_z(x, product)
         key = f"{ll} w"
-        if bfs[key] > 0.0:
+        if bfs.get(key) is not None:
             spec[key] = 2 * bfs[key] * self.dndx_l_w(x, product)
 
         # N -> v + u + u
         for qu, g in UP_QUARK_STR_GEN:
             key = f"{vv} {qu} {qu}bar"
-            if bfs[key] > 0.0:
+            if bfs.get(key) is not None:
                 spec[f"{vv} {qu} {qu}bar"] = bfs[key] * self.dndx_v_u_u(
                     x, product, g, npts=npts, nbins=nbins
                 )
@@ -586,7 +611,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         # N -> v + d + d
         for qd, g in DOWN_QUARK_STR_GEN:
             key = f"{vv} {qd} {qd}bar"
-            if bfs[key] > 0.0:
+            if bfs.get(key) is not None:
                 spec[f"{vv} {qd} {qd}bar"] = bfs[key] * self.dndx_v_d_d(
                     x, product, g, npts=npts, nbins=nbins
                 )
@@ -595,7 +620,7 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         for qu, gu in UP_QUARK_STR_GEN:
             for qd, gd in DOWN_QUARK_STR_GEN:
                 key = f"{ll} {qu} {qd}bar"
-                if bfs[key] > 0.0:
+                if bfs.get(key) is not None:
                     spec[f"{ll} {qu} {qd}bar"] = (
                         2
                         * bfs[key]
@@ -606,18 +631,18 @@ class RhNeutrinoGeV(RhNeutrinoBase):
         for lep, g in LEPTON_STR_GEN:
             if lep == ll:
                 key = f"v{ll} {ll} {ll}bar"
-                if bfs[key] > 0.0:
+                if bfs.get(key) is not None:
                     spec[key] = bfs[key] * self.dndx_v_l_l(
                         x, product, genn, genn, genn, npts=npts, nbins=nbins
                     )
             else:
                 key = f"v{ll} {lep} {lep}bar"
-                if bfs[key] > 0.0:
+                if bfs.get(key) is not None:
                     spec[key] = bfs[key] * self.dndx_v_l_l(
                         x, product, genn, g, g, npts=npts, nbins=nbins
                     )
                 key = f"v{lep} {ll} {lep}bar"
-                if bfs[key] > 0.0:
+                if bfs.get(key) is not None:
                     spec[key] = (
                         2
                         * bfs[key]

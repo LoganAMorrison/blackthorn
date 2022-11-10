@@ -1,6 +1,10 @@
 """
-
+Module containing the relevant squared matrix elements for the RHN model.
 """
+
+# pylint: disable=too-many-locals,invalid-name
+
+
 # TODO: l + pi + pi0 seems wrong.
 
 from typing import List, Sequence, Union
@@ -10,12 +14,23 @@ from typing import List, Sequence, Union
 import numpy as np
 import numpy.typing as npt
 from helax.numpy import amplitudes, wavefunctions
+from helax.numpy.lvector import lnorm_sqr
 from helax.vertices import VertexFFS, VertexFFV
 
 from .. import fields
 from ..constants import CKM_UD, CW, GF, SW
-from ..fields import (ChargedPion, Electron, Higgs, Muon, NeutralPion,
-                      ScalarBoson, Tau, VectorBoson, WBoson, ZBoson)
+from ..fields import (
+    ChargedPion,
+    Electron,
+    Higgs,
+    Muon,
+    NeutralPion,
+    ScalarBoson,
+    Tau,
+    VectorBoson,
+    WBoson,
+    ZBoson,
+)
 from . import feynman_rules
 from .base import RhNeutrinoBase
 
@@ -85,8 +100,12 @@ def charge_conjugate_spinors(psi: Sequence[DiracWf]) -> List[DiracWf]:
 
 
 def vector_current(
-    vector: VectorBoson, vertex: VertexFFV, psi_out: DiracWf, psi_in: DiracWf
-):
+    vector: VectorBoson,
+    vertex: VertexFFV,
+    psi_out: DiracWf,
+    psi_in: DiracWf,
+    exclude_resonance: bool = False,
+) -> VectorWf:
     """Compute the w-current from a pair of spinors.
 
     Parameters
@@ -99,20 +118,51 @@ def vector_current(
         Flow-out dirac wavefunction.
     psi_in: DiracWf
         Flow-in dirac wavefunction.
+    exclude_resonance: bool
+        If True, the resonance contribution to the propagator is removed. Default is False.
 
     Returns
     -------
     current: VectorWf
         Vector-boson wavefunction generated from the two fermions.
     """
-    return amplitudes.current_ff_to_v(
+    assert isinstance(vector, VectorBoson)
+    assert isinstance(vertex, VertexFFV)
+    assert isinstance(
+        psi_out, DiracWf
+    ), f"First wavefunction must be a DiracWf. Found {type(psi_out)}."
+    assert isinstance(
+        psi_in, DiracWf
+    ), f"Second wavefunction must be a DiracWf. Found {type(psi_in)}."
+
+    assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
+    assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
+
+    current = amplitudes.current_ff_to_v(
         vertex, vector.mass, vector.width, psi_out, psi_in
     )
 
+    if exclude_resonance:
+        # Remove resonance by taking 1 / (z + I eps) and turning it into
+        #   z / (z^2 + eps^2) + eps / (z^2 + eps^2)
+        # where z = (p^2 - m^2) and eps = m * width.  The expression
+        # eps / (z^2 + eps^2) is responsible for the resonance.
+        s = lnorm_sqr(current.momentum)
+        z = s - vector.mass**2
+        eps = vector.mass * vector.width
+        regulator = z / (z - 1j * eps)
+        current.wavefunction *= regulator
+
+    return current
+
 
 def scalar_current(
-    scalar: ScalarBoson, vertex: VertexFFS, psi_out: DiracWf, psi_in: DiracWf
-):
+    scalar: ScalarBoson,
+    vertex: VertexFFS,
+    psi_out: DiracWf,
+    psi_in: DiracWf,
+    exclude_resonance: bool = False,
+) -> ScalarWf:
     """Compute the w-current from a pair of spinors.
 
     Parameters
@@ -125,15 +175,43 @@ def scalar_current(
         Flow-out dirac wavefunction.
     psi_in: DiracWf
         Flow-in dirac wavefunction.
+    exclude_resonance: bool
+        If True, the resonance contribution to the propagator is removed. Default is False.
 
     Returns
     -------
     current: ScalarWf
         Scalar-boson wavefunction generated from the two fermions.
     """
-    return amplitudes.current_ff_to_s(
+    assert isinstance(scalar, ScalarBoson)
+    assert isinstance(vertex, VertexFFS)
+
+    assert isinstance(
+        psi_out, DiracWf
+    ), f"First wavefunction must be a DiracWf. Found {type(psi_out)}."
+    assert isinstance(
+        psi_in, DiracWf
+    ), f"Second wavefunction must be a DiracWf. Found {type(psi_in)}."
+
+    assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
+    assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
+
+    current = amplitudes.current_ff_to_s(
         vertex, scalar.mass, scalar.width, psi_out, psi_in
     )
+
+    if exclude_resonance:
+        # Remove resonance by taking 1 / (z + I eps) and turning it into
+        #   z / (z^2 + eps^2) + eps / (z^2 + eps^2)
+        # where z = (p^2 - m^2) and eps = m * width.  The expression
+        # eps / (z^2 + eps^2) is responsible for the resonance.
+        s = lnorm_sqr(current.momentum)
+        z = s - scalar.mass**2
+        eps = scalar.mass * scalar.width
+        regulator = z / (z - 1j * eps)
+        current.wavefunction *= regulator
+
+    return current
 
 
 def amplitude(vertex: Vertex, wavefuncs: Sequence[Wavefunction]):
@@ -156,9 +234,15 @@ def amplitude(vertex: Vertex, wavefuncs: Sequence[Wavefunction]):
         assert len(wavefuncs) == 3, f"Expected 3 wavefunctions for a {type(vertex)}."
         psi_out, psi_in, eps = wavefuncs
 
-        assert isinstance(psi_out, DiracWf), "First wavefunction must be a DiracWf."
-        assert isinstance(psi_in, DiracWf), "Second wavefunction must be a DiracWf."
-        assert isinstance(eps, VectorWf), "Third wavefunction must be a Vector."
+        assert isinstance(
+            psi_out, DiracWf
+        ), f"First wavefunction must be a DiracWf. Found {type(psi_out)}."
+        assert isinstance(
+            psi_in, DiracWf
+        ), f"Second wavefunction must be a DiracWf. Found {type(psi_in)}."
+        assert isinstance(
+            eps, VectorWf
+        ), f"Third wavefunction must be a Vector. Found {type(eps)}"
 
         assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
         assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
@@ -169,9 +253,15 @@ def amplitude(vertex: Vertex, wavefuncs: Sequence[Wavefunction]):
         assert len(wavefuncs) == 3, f"Expected 3 wavefunctions for a {type(vertex)}."
         psi_out, psi_in, scalar = wavefuncs
 
-        assert isinstance(psi_out, DiracWf), "First wavefunction must be a DiracWf."
-        assert isinstance(psi_in, DiracWf), "Second wavefunction must be a DiracWf."
-        assert isinstance(scalar, ScalarWf), "Third wavefunction must be a ScalarWf."
+        assert isinstance(
+            psi_out, DiracWf
+        ), f"First wavefunction must be a DiracWf. Found {type(psi_out)}"
+        assert isinstance(
+            psi_in, DiracWf
+        ), f"Second wavefunction must be a DiracWf. Found {type(psi_in)}"
+        assert isinstance(
+            scalar, ScalarWf
+        ), f"Third wavefunction must be a ScalarWf. Found {type(scalar)}"
 
         assert psi_out.direction == -1, "First wavefunction must be a flow-out DiracWf"
         assert psi_in.direction == 1, "Second wavefunction must be a flow-in DiracWf"
@@ -221,9 +311,8 @@ def msqrd_n_to_v_l_l(self: RhNeutrinoBase, momenta, *, genv, genl1, genl2):
         l2_wf = l2_v[i_l2]
 
         # (l1, l2), (v, n)
-        return amplitude(
-            v_zll, (l1_wf, l2_wf, vector_current(ZBoson, v_znv, v_wf, n_wf))
-        )
+        current = vector_current(ZBoson, v_znv, v_wf, n_wf, exclude_resonance=True)
+        return amplitude(v_zll, (l1_wf, l2_wf, current))
 
     def diagram2(i_n, i_v, i_l1, i_l2):
         n_wf = n_u[i_n]
@@ -232,9 +321,8 @@ def msqrd_n_to_v_l_l(self: RhNeutrinoBase, momenta, *, genv, genl1, genl2):
         l2_wf = l2_v[i_l2]
 
         # (v, l2), (l1, n)
-        return -amplitude(
-            v_wvl2, (v_wf, l2_wf, vector_current(WBoson, v_wnl1, l1_wf, n_wf))
-        )
+        current = vector_current(WBoson, v_wnl1, l1_wf, n_wf, exclude_resonance=True)
+        return -amplitude(v_wvl2, (v_wf, l2_wf, current))
 
     def diagram3(i_n, i_v, i_l1, i_l2):
         n_wf = n_vbar[i_n]
@@ -243,9 +331,8 @@ def msqrd_n_to_v_l_l(self: RhNeutrinoBase, momenta, *, genv, genl1, genl2):
         l2_wf = l2_v[i_l2]
 
         # (l1, v), (n, l2)
-        return amplitude(
-            v_wvl1, (l1_wf, v_wf, vector_current(WBoson, v_wnl2, n_wf, l2_wf))
-        )
+        current = vector_current(WBoson, v_wnl2, n_wf, l2_wf, exclude_resonance=True)
+        return amplitude(v_wvl1, (l1_wf, v_wf, current))
 
     def _msqrd(i_n, i_v, i_l1, i_l2):
         d1 = diagram1(i_n, i_v, i_l1, i_l2)
@@ -273,31 +360,53 @@ def msqrd_n_to_v_v_v(self: RhNeutrinoBase, momenta, *, genv1, genv2, genv3):
     wf_j_1 = dirac_spinor("ubar", pv1, 0.0)
     wf_k_1 = dirac_spinor("ubar", pv2, 0.0)
     wf_l_1 = dirac_spinor("v", pv3, 0.0)
-    vji_1 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv1)
-    vkl_1 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv3)
+    vzji_1 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv1)
+    vzkl_1 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv3)
+    vhji_1 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv1)
+    vhkl_1 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv2, genv2=genv3)
 
     wf_j_2 = dirac_spinor("ubar", pv2, 0.0)
     wf_k_2 = dirac_spinor("ubar", pv1, 0.0)
     wf_l_2 = dirac_spinor("v", pv3, 0.0)
-    vji_2 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv2)
-    vkl_2 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv1, genv2=genv3)
+    vzji_2 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv2)
+    vzkl_2 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv1, genv2=genv3)
+    vhji_2 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv2)
+    vhkl_2 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv1, genv2=genv3)
 
     wf_j_3 = dirac_spinor("ubar", pv3, 0.0)
     wf_k_3 = dirac_spinor("ubar", pv2, 0.0)
     wf_l_3 = dirac_spinor("v", pv1, 0.0)
-    vji_3 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv3)
-    vkl_3 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv1)
+    vzji_3 = feynman_rules.vertex_znv(theta, genn=genn, genv=genv3)
+    vzkl_3 = feynman_rules.vertex_zvv(theta, genn=genn, genv1=genv2, genv2=genv1)
+    vhji_3 = feynman_rules.vertex_hnv(theta, mass, genn=genn, genv=genv3)
+    vhkl_3 = feynman_rules.vertex_hvv(theta, mass, genn=genn, genv1=genv2, genv2=genv1)
 
-    def _amplitude_template(wfi, wfj, wfk, wfl, vji, vkl):
-        wfz = vector_current(ZBoson, vji, wfj, wfi)
-        return amplitude(vkl, [wfk, wfl, wfz])
+    def _amplitude_template(  # pylint: disable=too-many-arguments
+        wfi: DiracWf,
+        wfj: DiracWf,
+        wfk: DiracWf,
+        wfl: DiracWf,
+        vzji: VertexFFV,
+        vhji: VertexFFS,
+        vzkl: VertexFFV,
+        vhkl: VertexFFS,
+    ):
+        wfz = vector_current(ZBoson, vzji, wfj, wfi, exclude_resonance=True)
+        wfh = scalar_current(Higgs, vhji, wfj, wfi, exclude_resonance=True)
+        return amplitude(vzkl, [wfk, wfl, wfz]) + amplitude(vhkl, [wfk, wfl, wfh])
 
     def _amplitude(ii, ij, ik, il):
         wfi = wf_i[ii]
         return (
-            +_amplitude_template(wfi, wf_j_1[ij], wf_k_1[ik], wf_l_1[il], vji_1, vkl_1)
-            - _amplitude_template(wfi, wf_j_2[ik], wf_k_2[ij], wf_l_2[il], vji_2, vkl_2)
-            - _amplitude_template(wfi, wf_j_3[il], wf_k_3[ik], wf_l_3[ij], vji_3, vkl_3)
+            +_amplitude_template(
+                wfi, wf_j_1[ij], wf_k_1[ik], wf_l_1[il], vzji_1, vhji_1, vzkl_1, vhkl_1
+            )
+            - _amplitude_template(
+                wfi, wf_j_2[ik], wf_k_2[ij], wf_l_2[il], vzji_2, vhji_2, vzkl_2, vhkl_2
+            )
+            - _amplitude_template(
+                wfi, wf_j_3[il], wf_k_3[ik], wf_l_3[ij], vzji_3, vhji_3, vzkl_3, vhkl_3
+            )
         )
 
     def _msqrd(ii, ij, ik, il):
@@ -327,8 +436,8 @@ def msqrd_n_to_v_u_u(self: RhNeutrinoBase, momenta, *, genu):
     v_znv = feynman_rules.vertex_znv(self.theta, genn=genn, genv=genn)
     v_zuu = feynman_rules.VERTEX_ZUU
 
-    v_hnv = feynman_rules.vertex_hnv(self.theta, self.mass, genn=genn, genv=genn)
-    v_huu = feynman_rules.VERTEX_HUU[genu]
+    # v_hnv = feynman_rules.vertex_hnv(self.theta, self.mass, genn=genn, genv=genn)
+    # v_huu = feynman_rules.VERTEX_HUU[genu]
 
     def _msqrd(i_n, i_v1, i_u1, i_u2):
         wfn = n_wfs[i_n]
@@ -336,13 +445,13 @@ def msqrd_n_to_v_u_u(self: RhNeutrinoBase, momenta, *, genu):
         wfu1 = u1_wfs[i_u1]
         wfu2 = u2_wfs[i_u2]
 
-        wf_z = vector_current(ZBoson, v_znv, wfv, wfn)
-        wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
+        wf_z = vector_current(ZBoson, v_znv, wfv, wfn, exclude_resonance=True)
+        # wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
 
         return np.square(
             np.abs(
                 amplitude(v_zuu, (wfu1, wfu2, wf_z))
-                + amplitude(v_huu, (wfu1, wfu2, wf_h))
+                # + amplitude(v_huu, (wfu1, wfu2, wf_h))
             )
         )
 
@@ -370,8 +479,8 @@ def msqrd_n_to_v_d_d(self: RhNeutrinoBase, momenta, *, gend):
     v_znv = feynman_rules.vertex_znv(self.theta, genn=genn, genv=genn)
     v_zdd = feynman_rules.VERTEX_ZDD
 
-    v_hnv = feynman_rules.vertex_hnv(self.theta, self.mass, genn=genn, genv=genn)
-    v_hdd = feynman_rules.VERTEX_HDD[gend]
+    # v_hnv = feynman_rules.vertex_hnv(self.theta, self.mass, genn=genn, genv=genn)
+    # v_hdd = feynman_rules.VERTEX_HDD[gend]
 
     def _msqrd(i_n, i_v1, i_d1, i_d2):
         wfn = n_wfs[i_n]
@@ -379,13 +488,13 @@ def msqrd_n_to_v_d_d(self: RhNeutrinoBase, momenta, *, gend):
         wfd1 = d1_wfs[i_d1]
         wfd2 = d2_wfs[i_d2]
 
-        wf_z = vector_current(ZBoson, v_znv, wfv, wfn)
-        wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
+        wf_z = vector_current(ZBoson, v_znv, wfv, wfn, exclude_resonance=True)
+        # wf_h = scalar_current(Higgs, v_hnv, wfv, wfn)
 
         return np.square(
             np.abs(
                 amplitude(v_zdd, (wfd1, wfd2, wf_z))
-                + amplitude(v_hdd, (wfd1, wfd2, wf_h))
+                # + amplitude(v_hdd, (wfd1, wfd2, wf_h))
             )
         )
 
@@ -396,6 +505,22 @@ def msqrd_n_to_v_d_d(self: RhNeutrinoBase, momenta, *, gend):
 
 
 def msqrd_n_to_l_u_d(self: RhNeutrinoBase, momenta, *, genu, gend):
+    """Compute the squared matrix element for N -> l + u + d.
+
+    Parameters
+    ----------
+    momenta: array
+        Array containing the momenta for the final state particles.
+    genu: Gen
+        Generation of the up-type quark.
+    gend: Gen
+        Generation of the down-type quark.
+
+    Returns
+    -------
+    msqrd: array
+        The squared matrix element averaged over spins.
+    """
     mass = self.mass
     theta = self.theta
     genn = self.gen
@@ -410,7 +535,7 @@ def msqrd_n_to_l_u_d(self: RhNeutrinoBase, momenta, *, genu, gend):
     u_wfs = dirac_spinor("ubar", pu, up_quark_masses[genu])
     d_wfs = dirac_spinor("v", pd, down_quark_masses[gend])
 
-    v_wnl = feynman_rules.vertex_wnl(theta, genn=genn, genl=genn, l_in=False)
+    v_wnl = feynman_rules.vertex_wnl(theta, genn=genn, genl=genn)
     v_wud = feynman_rules.vertex_wud(genu=genu, gend=gend, u_in=False)
 
     def _msqrd(i_n, i_l, i_u, i_d):
@@ -419,8 +544,8 @@ def msqrd_n_to_l_u_d(self: RhNeutrinoBase, momenta, *, genu, gend):
         wfu = u_wfs[i_u]
         wfd = d_wfs[i_d]
 
-        wf_z = vector_current(WBoson, v_wnl, wfl, wfn)
-        return np.square(np.abs(amplitude(v_wud, (wfu, wfd, wf_z))))
+        wf_w = vector_current(WBoson, v_wnl, wfl, wfn, exclude_resonance=True)
+        return np.square(np.abs(amplitude(v_wud, (wfu, wfd, wf_w))))
 
     idxs = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1])).T.reshape(-1, 4)
     res = sum(_msqrd(i_n, i_l, i_u, i_d) for (i_n, i_l, i_u, i_d) in idxs)
