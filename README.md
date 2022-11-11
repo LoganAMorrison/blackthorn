@@ -6,6 +6,8 @@
 | [**Installation**](#install)
 | [**Usage**](#usage)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7312434.svg)](https://doi.org/10.5281/zenodo.7312434)
+
 ## <a id="overview">Overview</a>
 
 `blackthorn` is a tool for generating photon, positron and neutrino spectra
@@ -17,7 +19,9 @@ To handle the large mass range, `blackthorn` uses:
 - [`PPC4DMID`](http://www.marcocirelli.net/PPPC4DMID.html) for RH-neutrino masses > 5 GeV and < 1 TeV,
 - [`HDMSpectra`](https://github.com/nickrodd/HDMSpectra) for RH-neutrino masses > 1 TeV.
 
-## 📦 <a id="installation">Installation</a>
+## 📦 <a id="install">Installation</a>
+
+To install, [poetry][https://python-poetry.org/] is recommended
 
 ## 🚀 <a id="usage">Usage</a>
 
