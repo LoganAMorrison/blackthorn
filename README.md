@@ -21,7 +21,11 @@ To handle the large mass range, `blackthorn` uses:
 
 ## 📦 <a id="install">Installation</a>
 
-To install, [poetry][https://python-poetry.org/] is recommended
+To install, [poetry](https://python-poetry.org/) is recommended. After cloning the repo and navigating to the source directory, run:
+
+```sh
+poetry install
+```
 
 ## 🚀 <a id="usage">Usage</a>
 
